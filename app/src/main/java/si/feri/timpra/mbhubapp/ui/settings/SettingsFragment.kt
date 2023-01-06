@@ -1,4 +1,4 @@
-package si.feri.timpra.mbhubapp.ui.notifications
+package si.feri.timpra.mbhubapp.ui.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import si.feri.timpra.mbhubapp.databinding.FragmentNotificationsBinding
+import si.feri.timpra.mbhubapp.databinding.FragmentSettingsBinding
 
-class NotificationsFragment : Fragment() {
+class SettingsFragment : Fragment() {
 
-    private var _binding: FragmentNotificationsBinding? = null
+    private var _binding: FragmentSettingsBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class NotificationsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(NotificationsViewModel::class.java)
+        val simulateViewModel =
+            ViewModelProvider(this)[SettingsViewModel::class.java]
 
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textSimulate
+        simulateViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

@@ -1,4 +1,4 @@
-package si.feri.timpra.mbhubapp.ui.home
+package si.feri.timpra.mbhubapp.ui.simulate
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,29 +7,26 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import si.feri.timpra.mbhubapp.databinding.FragmentHomeBinding
+import si.feri.timpra.mbhubapp.databinding.FragmentSimulateBinding
 
-class HomeFragment : Fragment() {
+class SimulateFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentSimulateBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this)[HomeViewModel::class.java]
+        val simulateViewModel = ViewModelProvider(this)[SimulateViewModel::class.java]
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentSimulateBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textSimulate
+        simulateViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

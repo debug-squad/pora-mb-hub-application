@@ -10,16 +10,19 @@
         android:name="si.feri.timpra.mbhubapp.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
-
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="si.feri.timpra.mbhubapp.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
-
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="si.feri.timpra.mbhubapp.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:name="si.feri.timpra.mbhubapp.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/navigation_simulate"
+        android:name="si.feri.timpra.mbhubapp.ui.simulate.SimulateFragment"
+        android:label="@string/title_simulate"
+        tools:layout="@layout/fragment_simulate" />
 </navigation>
