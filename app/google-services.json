@@ -1,0 +1,114 @@
+{
+  "project_info": {
+    "project_number": "322140039013",
+    "firebase_url": "https://imhere-4ade3-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "imhere-4ade3",
+    "storage_bucket": "imhere-4ade3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322140039013:android:f4dcefb02126e72408a38c",
+        "android_client_info": {
+          "package_name": "com.example.imhere"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "322140039013-4e3r1ocfedebgd5ud811v772ln7icc9t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.imhere",
+            "certificate_hash": "9010ed1d5f0fee8e9750df21d3da32a55ad89137"
+          }
+        },
+        {
+          "client_id": "322140039013-pkv02436nivn6cjpshf7dnqkel7k8fkq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa_76oWKe2wjZcQ4uiOHsL1UnOSBu4L2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "322140039013-pkv02436nivn6cjpshf7dnqkel7k8fkq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322140039013:android:f7c0dd113ab8b5f208a38c",
+        "android_client_info": {
+          "package_name": "com.example.poraproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "322140039013-vl60evuk4j5quj9f3npvbvkq5pk2bcc2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.poraproject",
+            "certificate_hash": "9010ed1d5f0fee8e9750df21d3da32a55ad89137"
+          }
+        },
+        {
+          "client_id": "322140039013-pkv02436nivn6cjpshf7dnqkel7k8fkq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa_76oWKe2wjZcQ4uiOHsL1UnOSBu4L2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "322140039013-pkv02436nivn6cjpshf7dnqkel7k8fkq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322140039013:android:5b77fe93fd9998da08a38c",
+        "android_client_info": {
+          "package_name": "si.feri.timpra.mbhubapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "322140039013-pkv02436nivn6cjpshf7dnqkel7k8fkq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa_76oWKe2wjZcQ4uiOHsL1UnOSBu4L2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "322140039013-pkv02436nivn6cjpshf7dnqkel7k8fkq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
