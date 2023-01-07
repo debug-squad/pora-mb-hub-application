@@ -1,7 +1,9 @@
 package si.feri.timpra.mbhubapp
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -38,6 +40,10 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        //
+        // Model view
+        //
+
         val spanOffline = binding.spanOffline
         app.online.observe(this) {
             // Update status
@@ -52,6 +58,28 @@ class MainActivity : AppCompatActivity() {
             // Update status
             spanMqttOffline.visibility = if (it) View.GONE else View.VISIBLE
         }
+
+        //
+        // Permissions
+        //
+
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { result ->
+            var allAreGranted = true
+            for (b in result.values) allAreGranted = allAreGranted && b
+            if (!allAreGranted) this.finish()
+        }.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.INTERNET,
+            )
+        )
     }
 
     override fun onDestroy() {

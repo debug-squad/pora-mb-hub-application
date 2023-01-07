@@ -103,20 +103,22 @@ class MyApplication : Application() {
 
     fun connect() {
         if (mqttConnected.value!!) return;
-        mqttClient.toAsync().connect().whenCompleteAsync { _, e ->
-            if (e == null) {
-                _mqttConnected.value = true
-            } else {
-                e.printStackTrace()
-                _mqttConnected.value = false
-            }
+        try {
+            mqttClient.toBlocking().connect()
+            _mqttConnected.value = true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _mqttConnected.value = false
         }
     }
 
     fun disconnect() {
         if (!mqttConnected.value!!) return;
-        mqttClient.toAsync().disconnect().whenCompleteAsync { _, _ ->
-            _mqttConnected.value = false
+        try {
+            mqttClient.toBlocking().disconnect()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+        _mqttConnected.value = false
     }
 }
