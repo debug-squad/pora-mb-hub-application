@@ -31,7 +31,7 @@ class MyApplication : Application() {
     private lateinit var database: FirebaseDatabase
     private lateinit var eventsRef: DatabaseReference
 
-    private lateinit var mqttClient: Mqtt5Client
+    lateinit var mqttClient: Mqtt5Client
 
     private val _online = MutableLiveData<Boolean>().apply { value = false }
     val online: LiveData<Boolean> = _online
@@ -121,4 +121,8 @@ class MyApplication : Application() {
         }
         _mqttConnected.value = false
     }
+
+
+
+    fun getId(): UUID = clientID
 }
