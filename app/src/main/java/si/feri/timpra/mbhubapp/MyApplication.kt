@@ -12,12 +12,15 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
 import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client
+import org.osmdroid.util.GeoPoint
 import java.util.*
 
 const val MY_SP_FILE_NAME = "myshared.data"
 const val PREFERENCES_ID = "ID"
+const val PREFERENCES_SIMULATION_POS = "SIMULATION_POS"
 const val MQTT_BROKER_URL = "125202eb8708473eb5d18de1dacaa45a.s2.eu.hivemq.cloud"
 const val MQTT_BROKER_PORT = 8883
 const val MQTT_USERNAME = "mb-hub-client"
@@ -38,6 +41,10 @@ class MyApplication : Application() {
 
     private val _mqttConnected = MutableLiveData<Boolean>().apply { value = false }
     val mqttConnected: LiveData<Boolean> = _mqttConnected
+
+    private val _simulationPosition = MutableLiveData<GeoPoint>()
+    val simulationPosition: LiveData<GeoPoint> = _simulationPosition
+
 
     override fun onCreate() {
         super.onCreate()
@@ -63,6 +70,23 @@ class MyApplication : Application() {
         }
 
         //
+        // Set simulation position
+        //
+
+        if (!sharedPref.contains(PREFERENCES_SIMULATION_POS)) {
+            val point = GeoPoint(46.557314, 15.637771)
+            with(sharedPref.edit()) {
+                putString(PREFERENCES_SIMULATION_POS, Gson().toJson(point))
+                apply()
+            }
+            _simulationPosition.value = point
+        } else {
+            _simulationPosition.value = Gson().fromJson(
+                sharedPref.getString(PREFERENCES_SIMULATION_POS, null)!!, GeoPoint::class.java
+            )
+        }
+
+        //
         // Connect to db
         //
 
@@ -77,13 +101,11 @@ class MyApplication : Application() {
             .useMqttVersion5()
             .identifier(clientID.toString())
             .serverHost(MQTT_BROKER_URL)
-            .serverPort(MQTT_BROKER_PORT)
-            .sslWithDefaultConfig()
+            .serverPort(MQTT_BROKER_PORT).sslWithDefaultConfig()
             .simpleAuth()
             .username(MQTT_USERNAME)
             .password(MQTT_PASSWORD.toByteArray())
-            .applySimpleAuth()
-            .build()
+            .applySimpleAuth().build()
 
         //
         // Connectivity
@@ -102,7 +124,7 @@ class MyApplication : Application() {
     }
 
     fun connect() {
-        if (mqttConnected.value!!) return;
+        if (mqttConnected.value!!) return
         try {
             mqttClient.toBlocking().connect()
             _mqttConnected.value = true
@@ -113,7 +135,7 @@ class MyApplication : Application() {
     }
 
     fun disconnect() {
-        if (!mqttConnected.value!!) return;
+        if (!mqttConnected.value!!) return
         try {
             mqttClient.toBlocking().disconnect()
         } catch (e: Exception) {
@@ -122,7 +144,13 @@ class MyApplication : Application() {
         _mqttConnected.value = false
     }
 
-
-
     fun getId(): UUID = clientID
+
+    fun updateSimulationPosition(geo: GeoPoint) {
+        with(sharedPref.edit()) {
+            putString(PREFERENCES_SIMULATION_POS, Gson().toJson(geo))
+            apply()
+        }
+        _simulationPosition.value = geo
+    }
 }

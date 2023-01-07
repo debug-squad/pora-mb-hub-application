@@ -13,4 +13,9 @@
     <string name="map_picker_dialog_description">Do you want to set this location?</string>
     <string name="map_picker_dialog_neutral">Cancel</string>
     <string name="map_picker_dialog_confirm">Yes</string>
+
+    <!-- -->
+    <string name="sim_longitude"><![CDATA[<b>Longitude:</b> %f]]></string>
+    <string name="sim_latitude"><![CDATA[<b>Latitude:</b> %f]]></string>
+    <string name="sim_set_location">Set Location</string>
 </resources>

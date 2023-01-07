@@ -31,6 +31,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
+import org.osmdroid.config.Configuration
 import si.feri.timpra.mbhubapp.databinding.ActivityMainBinding
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -50,7 +51,8 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Configuration.getInstance()
+            .load(applicationContext, this.getPreferences(Context.MODE_PRIVATE))
         binding = ActivityMainBinding.inflate(layoutInflater)
         app = application as MyApplication
         setContentView(binding.root)
