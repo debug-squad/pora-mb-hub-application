@@ -29,15 +29,14 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
-import com.hivemq.client.mqtt.datatypes.MqttQos
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
 import org.osmdroid.config.Configuration
 import si.feri.timpra.mbhubapp.databinding.ActivityMainBinding
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 import java.nio.file.Files
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.util.*
 import kotlin.properties.Delegates
 
 
@@ -112,6 +111,12 @@ class MainActivity : AppCompatActivity() {
     //
     //
 
+    private var timerSound: Timer? = null
+    private var timerAcc: Timer? = null
+    private var timerSimImg: Timer? = null
+    private var timerSimAcc: Timer? = null
+    private var timerSimSound: Timer? = null
+
     @RequiresApi(Build.VERSION_CODES.S)
     private fun init() {
         initialized = true
@@ -139,9 +144,186 @@ class MainActivity : AppCompatActivity() {
         //
         //
 
-        // takePhoto()
-        // recordAudio(5000)
-        // recordAccelerometer(5000)
+        app.settingsSound.observe(this) {
+            if (timerSound != null) timerSound!!.cancel()
+            if (!it.enabled) {
+                timerSound = null
+                return@observe
+            }
+            timerSound = Timer()
+
+            var flag = true
+            timerSound!!.schedule(object : TimerTask() {
+                override fun run() {
+                    if (flag) {
+                        flag = false
+                        Looper.prepare()
+                    }
+                    recordAudio(it.duration)
+                }
+            }, 0, it.interval + it.duration)
+        }
+
+        //
+        //
+        //
+
+        app.settingsAcc.observe(this) {
+            if (timerAcc != null) timerAcc!!.cancel()
+            if (!it.enabled) {
+                timerAcc = null
+                return@observe
+            }
+            timerAcc = Timer()
+            var flag = true
+            timerAcc!!.schedule(object : TimerTask() {
+                override fun run() {
+                    if (flag) {
+                        flag = false
+                        Looper.prepare()
+                    }
+                    recordAccelerometer(it.duration)
+                }
+            }, 0, it.interval + it.duration)
+        }
+
+        //
+        //
+        //
+
+        app.simAccSettings.observe(this) {
+            if (timerSimAcc != null) timerSimAcc!!.cancel()
+            if (!it.enabled) {
+                timerSimAcc = null
+                return@observe
+            }
+            timerSimAcc = Timer()
+            var flag = true
+            timerSimAcc!!.schedule(object : TimerTask() {
+                override fun run() {
+                    if (flag) {
+                        flag = false
+                        Looper.prepare()
+                    }
+
+                    app.simulationPosition.value?.let { loc ->
+                        app.simAccPath.value?.toPath()?.let { path ->
+                            val data = try {
+                                Files.readAllBytes(path)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Failed to read acc file",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                app.updateSimAccPath(null)
+                                return@run
+                            }
+                            app.sendAcc(
+                                time = LocalDateTime.now(),
+                                latitude = loc.latitude,
+                                longitude = loc.longitude,
+                                data = data
+                            )
+                        }
+                    }
+                }
+            }, 0, it.interval + it.duration)
+        }
+
+        //
+        //
+        //
+
+        app.simImgSettings.observe(this) {
+            if (timerSimImg != null) timerSimImg!!.cancel()
+            if (!it.enabled) {
+                timerSimImg = null
+                return@observe
+            }
+            timerSimImg = Timer()
+            var flag = true
+            timerSimImg!!.schedule(object : TimerTask() {
+                override fun run() {
+                    if (flag) {
+                        flag = false
+                        Looper.prepare()
+                    }
+
+                    app.simulationPosition.value?.let { loc ->
+                        app.simImgPath.value?.toPath()?.let { path ->
+                            val data = try {
+                                Files.readAllBytes(path)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Failed to read img file",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                app.updateSimImgPath(null)
+                                return@run
+                            }
+                            app.sendImg(
+                                time = LocalDateTime.now(),
+                                latitude = loc.latitude,
+                                longitude = loc.longitude,
+                                data = data
+                            )
+                        }
+                    }
+                }
+            }, 0, it.interval + it.duration)
+        }
+
+        //
+        //
+        //
+
+        app.simSoundSettings.observe(this) {
+            if (timerSimSound != null) timerSimSound!!.cancel()
+            if (!it.enabled) {
+                timerSimSound = null
+                return@observe
+            }
+            timerSimSound = Timer()
+            var flag = true
+            timerSimSound!!.schedule(object : TimerTask() {
+                override fun run() {
+                    if (flag) {
+                        flag = false
+                        Looper.prepare()
+                    }
+
+                    app.simulationPosition.value?.let { loc ->
+                        app.simSoundPath.value?.toPath()?.let { path ->
+                            val data = try {
+                                Files.readAllBytes(path)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Failed to read sound file",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                app.updateSimSoundPath(null)
+                                return@run
+                            }
+                            app.sendSound(
+                                time = LocalDateTime.now(),
+                                latitude = loc.latitude,
+                                longitude = loc.longitude,
+                                data = data
+                            )
+                        }
+                    }
+                }
+            }, 0, it.interval + it.duration)
+        }
     }
 
     private fun destroy() {
@@ -151,7 +333,14 @@ class MainActivity : AppCompatActivity() {
         //
         //
 
+        if (timerSound != null) timerSound!!.cancel()
+        if (timerAcc != null) timerAcc!!.cancel()
+        if (timerSimAcc != null) timerSimAcc!!.cancel()
+        if (timerSimImg != null) timerSimImg!!.cancel()
+        if (timerSimSound != null) timerSimSound!!.cancel()
+
         app.disconnect()
+
     }
 
     @SuppressLint("ServiceCast")
@@ -185,13 +374,13 @@ class MainActivity : AppCompatActivity() {
             //
 
             val json = Gson().toJson(data)
-            getLocTimeTag {
-                app.mqttClient.toBlocking()
-                    .publish(
-                        Mqtt5Publish.builder().topic("accel/${app.getId()}")
-                            .payload(it + json.toByteArray())
-                            .qos(MqttQos.AT_MOST_ONCE).build()
-                    )
+            getLocTimeTag { time, loc ->
+                app.sendSound(
+                    time = time,
+                    latitude = loc.latitude,
+                    longitude = loc.longitude,
+                    data = json.toByteArray()
+                )
             }
         }, time)
     }
@@ -217,14 +406,13 @@ class MainActivity : AppCompatActivity() {
             //
 
             val data = Files.readAllBytes(file.toPath())
-            getLocTimeTag {
-                app.mqttClient.toBlocking()
-                    .publish(
-                        Mqtt5Publish.builder()
-                            .topic("audio/${app.getId()}")
-                            .payload(it + data)
-                            .qos(MqttQos.AT_MOST_ONCE).build()
-                    )
+            getLocTimeTag { time, loc ->
+                app.sendSound(
+                    time = time,
+                    latitude = loc.latitude,
+                    longitude = loc.longitude,
+                    data = data
+                )
             }
         }, time)
     }
@@ -242,11 +430,12 @@ class MainActivity : AppCompatActivity() {
                 val out = ByteArrayOutputStream()
                 data.compress(Bitmap.CompressFormat.JPEG, 90, out)
 
-                getLocTimeTag {
-                    app.mqttClient.toBlocking().publish(
-                        Mqtt5Publish.builder().topic("picture/${app.getId()}")
-                            .payload(it + out.toByteArray())
-                            .qos(MqttQos.AT_MOST_ONCE).build()
+                getLocTimeTag { time, loc ->
+                    app.sendImg(
+                        time = time,
+                        latitude = loc.latitude,
+                        longitude = loc.longitude,
+                        data = out.toByteArray()
                     )
                 }
 
@@ -265,19 +454,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("MissingPermission")
-    fun getLocTimeTag(callback: (ByteArray) -> Unit) {
-        val time = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+    private fun getLocTimeTag(callback: (LocalDateTime, Location) -> Unit) {
+        val time = LocalDateTime.now()
         LocationServices.getFusedLocationProviderClient(this)
             .lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
-                    val json = Gson().toJson(
-                        mapOf<String, Any>(
-                            "timestamp" to time,
-                            "latitude" to it.latitude,
-                            "longitude" to it.longitude,
-                        )
-                    )
-                    callback(json.toByteArray())
+                    callback(time, location)
                 }
             }
     }

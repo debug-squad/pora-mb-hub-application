@@ -58,7 +58,7 @@ class HomeFragment : Fragment() {
         }
         binding.cardAcc.setOnLongClickListener {
             CaptureSettingsFragment.startDialog(
-                requireActivity(), viewLifecycleOwner, app.settingsSound.value!!
+                requireActivity(), viewLifecycleOwner, app.settingsAcc.value!!
             ) {
                 app.updateSettingsAccelerometer(it)
             }

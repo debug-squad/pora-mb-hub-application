@@ -14,10 +14,14 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.hivemq.client.mqtt.MqttClient
+import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
 import org.osmdroid.util.GeoPoint
 import si.feri.timpra.mbhubapp.data.CaptureSettings
 import java.io.File
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 const val MY_SP_FILE_NAME = "myshared.data"
@@ -46,7 +50,7 @@ class MyApplication : Application() {
     private lateinit var database: FirebaseDatabase
     private lateinit var eventsRef: DatabaseReference
 
-    lateinit var mqttClient: Mqtt5Client
+    private lateinit var mqttClient: Mqtt5Client
 
     private val _online = MutableLiveData<Boolean>().apply { value = false }
     val online: LiveData<Boolean> = _online
@@ -300,7 +304,7 @@ class MyApplication : Application() {
             putString(PREFERENCES_SETTINGS_ACCELEROMETER, Gson().toJson(settings))
             apply()
         }
-        _settingsAcc.value = settings
+        _settingsAcc.postValue(settings)
     }
 
     fun updateSettingsSound(settings: CaptureSettings) {
@@ -308,7 +312,7 @@ class MyApplication : Application() {
             putString(PREFERENCES_SETTINGS_SOUND, Gson().toJson(settings))
             apply()
         }
-        _settingsSound.value = settings
+        _settingsSound.postValue(settings)
     }
 
 
@@ -317,7 +321,7 @@ class MyApplication : Application() {
             putString(PREFERENCES_SETTINGS_SIM_ACC, Gson().toJson(settings))
             apply()
         }
-        _simAccSettings.value = settings
+        _simAccSettings.postValue(settings)
     }
 
     fun updateSimAccPath(path: File?) {
@@ -327,7 +331,7 @@ class MyApplication : Application() {
             putString(PREFERENCES_SETTINGS_SIM_ACC_PATH, path?.path)
             apply()
         }
-        _simAccPath.value = path
+        _simAccPath.postValue(path)
 
     }
 
@@ -336,7 +340,7 @@ class MyApplication : Application() {
             putString(PREFERENCES_SETTINGS_SIM_IMG, Gson().toJson(settings))
             apply()
         }
-        _simImgSettings.value = settings
+        _simImgSettings.postValue(settings)
     }
 
     fun updateSimImgPath(path: File?) {
@@ -346,7 +350,7 @@ class MyApplication : Application() {
             putString(PREFERENCES_SETTINGS_SIM_IMG_PATH, path?.path)
             apply()
         }
-        _simImgPath.value = path
+        _simImgPath.postValue(path)
     }
 
     fun updateSimSoundSettings(settings: CaptureSettings) {
@@ -354,7 +358,7 @@ class MyApplication : Application() {
             putString(PREFERENCES_SETTINGS_SIM_SOUND, Gson().toJson(settings))
             apply()
         }
-        _simSoundSettings.value = settings
+        _simSoundSettings.postValue(settings)
     }
 
     fun updateSimSoundPath(path: File?) {
@@ -364,6 +368,64 @@ class MyApplication : Application() {
             putString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, path?.path)
             apply()
         }
-        _simSoundPath.value = path
+        _simSoundPath.postValue(path)
+    }
+
+    //
+    //
+    //
+
+    private fun locTimeToTag(time: LocalDateTime, latitude: Double, longitude: Double): ByteArray =
+        Gson().toJson(
+            mapOf(
+                "timestamp" to time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                "latitude" to latitude,
+                "longitude" to longitude,
+            )
+        ).toByteArray()
+
+    fun sendSound(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
+        mqttClient.toBlocking()
+            .publish(
+                Mqtt5Publish.builder()
+                    .topic("audio/$clientID")
+                    .payload(
+                        locTimeToTag(
+                            time = time,
+                            latitude = latitude,
+                            longitude = longitude
+                        ) + data
+                    )
+                    .qos(MqttQos.AT_MOST_ONCE).build()
+            )
+    }
+
+    fun sendImg(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
+        mqttClient.toBlocking().publish(
+            Mqtt5Publish.builder().topic("picture/$clientID")
+                .payload(
+                    locTimeToTag(
+                        time = time,
+                        latitude = latitude,
+                        longitude = longitude
+                    ) + data
+                )
+                .qos(MqttQos.AT_MOST_ONCE).build()
+        )
+    }
+
+    fun sendAcc(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
+        mqttClient.toBlocking()
+            .publish(
+                Mqtt5Publish.builder().topic("accel/$clientID")
+                    .payload(
+                        locTimeToTag(
+                            time = time,
+                            latitude = latitude,
+                            longitude = longitude
+                        ) + data
+                    )
+                    .qos(MqttQos.AT_MOST_ONCE).build()
+            )
     }
 }
