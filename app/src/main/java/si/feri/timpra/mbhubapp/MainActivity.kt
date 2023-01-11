@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Started recording acceleration", Toast.LENGTH_SHORT).show()
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        val data = mutableListOf<FloatArray>();
+        val data = mutableListOf<FloatArray>()
         val start = System.currentTimeMillis()
         val listener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent?) {
@@ -233,6 +233,7 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data!!.extras!!["data"] as Bitmap
+                Toast.makeText(this, "Took photo", Toast.LENGTH_SHORT).show()
 
                 //
                 //
@@ -252,6 +253,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    @SuppressLint("QueryPermissionsNeeded")
     fun takePhoto() {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (cameraIntent.resolveActivity(this.packageManager) != null) {

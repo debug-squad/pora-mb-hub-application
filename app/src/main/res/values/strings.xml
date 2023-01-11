@@ -1,5 +1,8 @@
 <resources>
+    <!-- -->
     <string name="app_name">MB-Hub-App</string>
+
+    <!-- -->
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_settings">Settings</string>
@@ -18,4 +21,7 @@
     <string name="sim_longitude"><![CDATA[<b>Longitude:</b> %f]]></string>
     <string name="sim_latitude"><![CDATA[<b>Latitude:</b> %f]]></string>
     <string name="sim_set_location">Set Location</string>
+
+    <!-- -->
+    <string name="dash_take_picture">Take picture</string>
 </resources>

@@ -14,7 +14,6 @@ import si.feri.timpra.mbhubapp.databinding.FragmentSimulateBinding
 import si.feri.timpra.mbhubapp.dialog.MapPickerFragment
 
 class SimulateFragment : Fragment() {
-
     private var _binding: FragmentSimulateBinding? = null
     private val binding get() = _binding!!
 
