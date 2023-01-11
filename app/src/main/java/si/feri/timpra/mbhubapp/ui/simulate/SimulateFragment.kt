@@ -13,6 +13,7 @@ import si.feri.timpra.mbhubapp.R
 import si.feri.timpra.mbhubapp.databinding.FragmentSimulateBinding
 import si.feri.timpra.mbhubapp.dialog.CaptureSettingsFragment
 import si.feri.timpra.mbhubapp.dialog.MapPickerFragment
+import java.io.File
 
 class SimulateFragment : Fragment() {
     private var _binding: FragmentSimulateBinding? = null
@@ -60,7 +61,7 @@ class SimulateFragment : Fragment() {
         binding.btnSelectImg.setOnClickListener {
             if (app.simImgPath.value == null) {
                 //TODO: add file selector
-                app.updateSimImgPath("test.jpg")
+                app.updateSimImgPath(File("test.jpg"))
             } else {
                 app.updateSimImgPath(null)
             }
@@ -71,7 +72,7 @@ class SimulateFragment : Fragment() {
                 if (it == null) getString(R.string.sim_select_image) else getString(R.string.sim_reset)
             if (it != null) {
                 binding.txtPathImg.text = Html.fromHtml(
-                    getString(R.string.sim_file_path, it),
+                    getString(R.string.sim_file_path, it.name),
                     HtmlCompat.FROM_HTML_MODE_COMPACT
                 )
             }
@@ -108,7 +109,7 @@ class SimulateFragment : Fragment() {
         binding.btnSelectSound.setOnClickListener {
             if (app.simSoundPath.value == null) {
                 //TODO: add file selector
-                app.updateSimSoundPath("test.mp3")
+                app.updateSimSoundPath(File("test.mp3"))
             } else {
                 app.updateSimSoundPath(null)
             }
@@ -119,7 +120,7 @@ class SimulateFragment : Fragment() {
                 if (it == null) getString(R.string.sim_select_sound) else getString(R.string.sim_reset)
             if (it != null) {
                 binding.txtPathSound.text = Html.fromHtml(
-                    getString(R.string.sim_file_path, it),
+                    getString(R.string.sim_file_path, it.name),
                     HtmlCompat.FROM_HTML_MODE_COMPACT
                 )
             }
@@ -156,7 +157,7 @@ class SimulateFragment : Fragment() {
         binding.btnSelectAcc.setOnClickListener {
             if (app.simAccPath.value == null) {
                 //TODO: add file selector
-                app.updateSimAccPath("test.json")
+                app.updateSimAccPath(File("test.json"))
             } else {
                 app.updateSimAccPath(null)
             }
@@ -167,7 +168,7 @@ class SimulateFragment : Fragment() {
                 if (it == null) getString(R.string.sim_select_accelerometer) else getString(R.string.sim_reset)
             if (it != null) {
                 binding.txtPathAcc.text = Html.fromHtml(
-                    getString(R.string.sim_file_path, it),
+                    getString(R.string.sim_file_path, it.name),
                     HtmlCompat.FROM_HTML_MODE_COMPACT
                 )
             }

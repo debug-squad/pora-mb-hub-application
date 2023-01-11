@@ -17,6 +17,7 @@ import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client
 import org.osmdroid.util.GeoPoint
 import si.feri.timpra.mbhubapp.data.CaptureSettings
+import java.io.File
 import java.util.*
 
 const val MY_SP_FILE_NAME = "myshared.data"
@@ -63,18 +64,18 @@ class MyApplication : Application() {
     val settingsSound: LiveData<CaptureSettings> = _settingsSound
 
 
-    private val _simSoundPath = MutableLiveData<String?>()
-    val simSoundPath: LiveData<String?> = _simSoundPath
+    private val _simSoundPath = MutableLiveData<File?>()
+    val simSoundPath: LiveData<File?> = _simSoundPath
     private val _simSoundSettings = MutableLiveData<CaptureSettings>()
     val simSoundSettings: LiveData<CaptureSettings> = _simSoundSettings
 
-    private val _simAccPath = MutableLiveData<String?>()
-    val simAccPath: LiveData<String?> = _simAccPath
+    private val _simAccPath = MutableLiveData<File?>()
+    val simAccPath: LiveData<File?> = _simAccPath
     private val _simAccSettings = MutableLiveData<CaptureSettings>()
     val simAccSettings: LiveData<CaptureSettings> = _simAccSettings
 
-    private val _simImgPath = MutableLiveData<String?>()
-    val simImgPath: LiveData<String?> = _simImgPath
+    private val _simImgPath = MutableLiveData<File?>()
+    val simImgPath: LiveData<File?> = _simImgPath
     private val _simImgSettings = MutableLiveData<CaptureSettings>()
     val simImgSettings: LiveData<CaptureSettings> = _simImgSettings
 
@@ -159,7 +160,8 @@ class MyApplication : Application() {
         //
 
         if (sharedPref.contains(PREFERENCES_SETTINGS_SIM_SOUND_PATH)) {
-            _simSoundPath.value = sharedPref.getString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, null)!!
+            _simSoundPath.value =
+                File(sharedPref.getString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, null)!!)
         } else {
             _simSoundPath.value = null
         }
@@ -182,7 +184,8 @@ class MyApplication : Application() {
         //
 
         if (sharedPref.contains(PREFERENCES_SETTINGS_SIM_ACC_PATH)) {
-            _simAccPath.value = sharedPref.getString(PREFERENCES_SETTINGS_SIM_ACC_PATH, null)!!
+            _simAccPath.value =
+                File(sharedPref.getString(PREFERENCES_SETTINGS_SIM_ACC_PATH, null)!!)
         } else {
             _simAccPath.value = null
         }
@@ -205,7 +208,8 @@ class MyApplication : Application() {
         //
 
         if (sharedPref.contains(PREFERENCES_SETTINGS_SIM_IMG_PATH)) {
-            _simImgPath.value = sharedPref.getString(PREFERENCES_SETTINGS_SIM_IMG_PATH, null)!!
+            _simImgPath.value =
+                File(sharedPref.getString(PREFERENCES_SETTINGS_SIM_IMG_PATH, null)!!)
         } else {
             _simImgPath.value = null
         }
@@ -316,11 +320,11 @@ class MyApplication : Application() {
         _simAccSettings.value = settings
     }
 
-    fun updateSimAccPath(path: String?) {
+    fun updateSimAccPath(path: File?) {
         if (path == null) updateSimAccSettings(simAccSettings.value!!.setEnabled(false))
 
         with(sharedPref.edit()) {
-            putString(PREFERENCES_SETTINGS_SIM_ACC_PATH, path)
+            putString(PREFERENCES_SETTINGS_SIM_ACC_PATH, path?.path)
             apply()
         }
         _simAccPath.value = path
@@ -335,11 +339,11 @@ class MyApplication : Application() {
         _simImgSettings.value = settings
     }
 
-    fun updateSimImgPath(path: String?) {
+    fun updateSimImgPath(path: File?) {
         if (path == null) updateSimImgSettings(simImgSettings.value!!.setEnabled(false))
 
         with(sharedPref.edit()) {
-            putString(PREFERENCES_SETTINGS_SIM_IMG_PATH, path)
+            putString(PREFERENCES_SETTINGS_SIM_IMG_PATH, path?.path)
             apply()
         }
         _simImgPath.value = path
@@ -353,11 +357,11 @@ class MyApplication : Application() {
         _simSoundSettings.value = settings
     }
 
-    fun updateSimSoundPath(path: String?) {
+    fun updateSimSoundPath(path: File?) {
         if (path == null) updateSimSoundSettings(simSoundSettings.value!!.setEnabled(false))
 
         with(sharedPref.edit()) {
-            putString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, path)
+            putString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, path?.path)
             apply()
         }
         _simSoundPath.value = path
