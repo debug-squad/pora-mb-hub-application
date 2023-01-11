@@ -328,7 +328,7 @@ class MyApplication : Application() {
         if (path == null) updateSimAccSettings(simAccSettings.value!!.setEnabled(false))
 
         with(sharedPref.edit()) {
-            putString(PREFERENCES_SETTINGS_SIM_ACC_PATH, path?.path)
+            putString(PREFERENCES_SETTINGS_SIM_ACC_PATH, path?.toURI()?.toString())
             apply()
         }
         _simAccPath.postValue(path)
@@ -347,7 +347,7 @@ class MyApplication : Application() {
         if (path == null) updateSimImgSettings(simImgSettings.value!!.setEnabled(false))
 
         with(sharedPref.edit()) {
-            putString(PREFERENCES_SETTINGS_SIM_IMG_PATH, path?.path)
+            putString(PREFERENCES_SETTINGS_SIM_IMG_PATH, path?.toURI()?.toString())
             apply()
         }
         _simImgPath.postValue(path)
@@ -365,7 +365,7 @@ class MyApplication : Application() {
         if (path == null) updateSimSoundSettings(simSoundSettings.value!!.setEnabled(false))
 
         with(sharedPref.edit()) {
-            putString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, path?.path)
+            putString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, path?.toURI()?.toString())
             apply()
         }
         _simSoundPath.postValue(path)

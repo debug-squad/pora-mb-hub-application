@@ -63,8 +63,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home,
-                R.id.navigation_simulate
+                R.id.navigation_home, R.id.navigation_simulate
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -214,8 +213,7 @@ class MainActivity : AppCompatActivity() {
                                     applicationContext,
                                     "Failed to read acc file",
                                     Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                ).show()
                                 app.updateSimAccPath(null)
                                 return@run
                             }
@@ -260,8 +258,7 @@ class MainActivity : AppCompatActivity() {
                                     applicationContext,
                                     "Failed to read img file",
                                     Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                ).show()
                                 app.updateSimImgPath(null)
                                 return@run
                             }
@@ -306,8 +303,7 @@ class MainActivity : AppCompatActivity() {
                                     applicationContext,
                                     "Failed to read sound file",
                                     Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                ).show()
                                 app.updateSimSoundPath(null)
                                 return@run
                             }
@@ -406,10 +402,7 @@ class MainActivity : AppCompatActivity() {
             val data = Files.readAllBytes(file.toPath())
             getLocTimeTag { time, loc ->
                 app.sendSound(
-                    time = time,
-                    latitude = loc.latitude,
-                    longitude = loc.longitude,
-                    data = data
+                    time = time, latitude = loc.latitude, longitude = loc.longitude, data = data
                 )
             }
         }, time)
@@ -454,11 +447,64 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun getLocTimeTag(callback: (LocalDateTime, Location) -> Unit) {
         val time = LocalDateTime.now()
-        LocationServices.getFusedLocationProviderClient(this)
-            .lastLocation.addOnSuccessListener { location: Location? ->
-                location?.let {
-                    callback(time, location)
-                }
+        LocationServices.getFusedLocationProviderClient(this).lastLocation.addOnSuccessListener { location: Location? ->
+            location?.let {
+                callback(time, location)
             }
+        }
     }
+
+    //
+    //
+    //
+
+    var resultSelectFileImg =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, "Selected img file", Toast.LENGTH_SHORT).show()
+                val contentUri = result.data?.data ?: return@registerForActivityResult
+                val dest = File(this.externalCacheDir, "imgSimulator.jpg")
+                try {
+                    Files.copy(contentResolver.openInputStream(contentUri), dest.toPath())
+                    app.updateSimImgPath(dest)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "Failed ot select file", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
+
+    var resultSelectFileSound =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, "Selected sound file", Toast.LENGTH_SHORT).show()
+                val contentUri = result.data?.data ?: return@registerForActivityResult
+                val dest = File(this.externalCacheDir, "audioSimulator.mp3")
+                try {
+                    Files.copy(contentResolver.openInputStream(contentUri), dest.toPath())
+                    app.updateSimSoundPath(dest)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "Failed ot select file", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
+    var resultSelectFileAcc =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, "Selected img file", Toast.LENGTH_SHORT).show()
+                val contentUri = result.data?.data ?: return@registerForActivityResult
+                val dest = File(this.externalCacheDir, "accSimulator.json")
+                try {
+                    Files.copy(contentResolver.openInputStream(contentUri), dest.toPath())
+                    app.updateSimAccPath(dest)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "Failed ot select file", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
 }

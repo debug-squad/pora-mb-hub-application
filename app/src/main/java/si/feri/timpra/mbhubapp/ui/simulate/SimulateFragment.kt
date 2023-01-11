@@ -1,5 +1,6 @@
 package si.feri.timpra.mbhubapp.ui.simulate
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
@@ -8,12 +9,12 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import si.feri.timpra.mbhubapp.MainActivity
 import si.feri.timpra.mbhubapp.MyApplication
 import si.feri.timpra.mbhubapp.R
 import si.feri.timpra.mbhubapp.databinding.FragmentSimulateBinding
 import si.feri.timpra.mbhubapp.dialog.CaptureSettingsFragment
 import si.feri.timpra.mbhubapp.dialog.MapPickerFragment
-import java.io.File
 
 class SimulateFragment : Fragment() {
     private var _binding: FragmentSimulateBinding? = null
@@ -60,8 +61,11 @@ class SimulateFragment : Fragment() {
 
         binding.btnSelectImg.setOnClickListener {
             if (app.simImgPath.value == null) {
-                //TODO: add file selector
-                app.updateSimImgPath(File("test.jpg"))
+                var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
+                chooseFile.type = "image/*"
+                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file")
+                (activity as MainActivity).resultSelectFileImg.launch(chooseFile)
             } else {
                 app.updateSimImgPath(null)
             }
@@ -108,8 +112,11 @@ class SimulateFragment : Fragment() {
 
         binding.btnSelectSound.setOnClickListener {
             if (app.simSoundPath.value == null) {
-                //TODO: add file selector
-                app.updateSimSoundPath(File("test.mp3"))
+                var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
+                chooseFile.type = "audio/*"
+                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file")
+                (activity as MainActivity).resultSelectFileSound.launch(chooseFile)
             } else {
                 app.updateSimSoundPath(null)
             }
@@ -156,8 +163,11 @@ class SimulateFragment : Fragment() {
 
         binding.btnSelectAcc.setOnClickListener {
             if (app.simAccPath.value == null) {
-                //TODO: add file selector
-                app.updateSimAccPath(File("test.json"))
+                var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
+                chooseFile.type = "application/json"
+                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file")
+                (activity as MainActivity).resultSelectFileAcc.launch(chooseFile)
             } else {
                 app.updateSimAccPath(null)
             }
