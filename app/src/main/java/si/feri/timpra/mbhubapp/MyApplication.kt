@@ -24,6 +24,14 @@ const val PREFERENCES_ID = "ID"
 const val PREFERENCES_SIMULATION_POS = "SIMULATION_POS"
 const val PREFERENCES_SETTINGS_ACCELEROMETER = "SETTINGS_ACCELEROMETER"
 const val PREFERENCES_SETTINGS_SOUND = "SETTINGS_SOUND"
+
+const val PREFERENCES_SETTINGS_SIM_SOUND = "SETTINGS_SIM_SOUND"
+const val PREFERENCES_SETTINGS_SIM_SOUND_PATH = "SETTINGS_SIM_SOUND_PATH"
+const val PREFERENCES_SETTINGS_SIM_IMG = "SETTINGS_SIM_IMG"
+const val PREFERENCES_SETTINGS_SIM_IMG_PATH = "SETTINGS_SIM_IMG_PATH"
+const val PREFERENCES_SETTINGS_SIM_ACC = "SETTINGS_SIM_ACC"
+const val PREFERENCES_SETTINGS_SIM_ACC_PATH = "SETTINGS_SIM_ACC_PATH"
+
 const val MQTT_BROKER_URL = "125202eb8708473eb5d18de1dacaa45a.s2.eu.hivemq.cloud"
 const val MQTT_BROKER_PORT = 8883
 const val MQTT_USERNAME = "mb-hub-client"
@@ -48,11 +56,27 @@ class MyApplication : Application() {
     private val _simulationPosition = MutableLiveData<GeoPoint>()
     val simulationPosition: LiveData<GeoPoint> = _simulationPosition
 
-    private val _settingsAccel = MutableLiveData<CaptureSettings>()
-    val settingsAccel: LiveData<CaptureSettings> = _settingsAccel
+    private val _settingsAcc = MutableLiveData<CaptureSettings>()
+    val settingsAcc: LiveData<CaptureSettings> = _settingsAcc
 
     private val _settingsSound = MutableLiveData<CaptureSettings>()
     val settingsSound: LiveData<CaptureSettings> = _settingsSound
+
+
+    private val _simSoundPath = MutableLiveData<String?>()
+    val simSoundPath: LiveData<String?> = _simSoundPath
+    private val _simSoundSettings = MutableLiveData<CaptureSettings>()
+    val simSoundSettings: LiveData<CaptureSettings> = _simSoundSettings
+
+    private val _simAccPath = MutableLiveData<String?>()
+    val simAccPath: LiveData<String?> = _simAccPath
+    private val _simAccSettings = MutableLiveData<CaptureSettings>()
+    val simAccSettings: LiveData<CaptureSettings> = _simAccSettings
+
+    private val _simImgPath = MutableLiveData<String?>()
+    val simImgPath: LiveData<String?> = _simImgPath
+    private val _simImgSettings = MutableLiveData<CaptureSettings>()
+    val simImgSettings: LiveData<CaptureSettings> = _simImgSettings
 
     override fun onCreate() {
         super.onCreate()
@@ -104,9 +128,9 @@ class MyApplication : Application() {
                 putString(PREFERENCES_SETTINGS_ACCELEROMETER, Gson().toJson(settings))
                 apply()
             }
-            _settingsAccel.value = settings
+            _settingsAcc.value = settings
         } else {
-            _settingsAccel.value = Gson().fromJson(
+            _settingsAcc.value = Gson().fromJson(
                 sharedPref.getString(PREFERENCES_SETTINGS_ACCELEROMETER, null)!!,
                 CaptureSettings::class.java
             )
@@ -126,6 +150,75 @@ class MyApplication : Application() {
         } else {
             _settingsSound.value = Gson().fromJson(
                 sharedPref.getString(PREFERENCES_SETTINGS_SOUND, null)!!,
+                CaptureSettings::class.java
+            )
+        }
+
+        //
+        // Set sim sound
+        //
+
+        if (sharedPref.contains(PREFERENCES_SETTINGS_SIM_SOUND_PATH)) {
+            _simSoundPath.value = sharedPref.getString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, null)!!
+        } else {
+            _simSoundPath.value = null
+        }
+        if (!sharedPref.contains(PREFERENCES_SETTINGS_SIM_SOUND)) {
+            val settings = CaptureSettings.DEFAULT_SOUND
+            with(sharedPref.edit()) {
+                putString(PREFERENCES_SETTINGS_SIM_SOUND, Gson().toJson(settings))
+                apply()
+            }
+            _simSoundSettings.value = settings
+        } else {
+            _simSoundSettings.value = Gson().fromJson(
+                sharedPref.getString(PREFERENCES_SETTINGS_SIM_SOUND, null)!!,
+                CaptureSettings::class.java
+            )
+        }
+
+        //
+        // Set sim acc
+        //
+
+        if (sharedPref.contains(PREFERENCES_SETTINGS_SIM_ACC_PATH)) {
+            _simAccPath.value = sharedPref.getString(PREFERENCES_SETTINGS_SIM_ACC_PATH, null)!!
+        } else {
+            _simAccPath.value = null
+        }
+        if (!sharedPref.contains(PREFERENCES_SETTINGS_SIM_ACC)) {
+            val settings = CaptureSettings.DEFAULT_ACCELEROMETER
+            with(sharedPref.edit()) {
+                putString(PREFERENCES_SETTINGS_SIM_ACC, Gson().toJson(settings))
+                apply()
+            }
+            _simAccSettings.value = settings
+        } else {
+            _simAccSettings.value = Gson().fromJson(
+                sharedPref.getString(PREFERENCES_SETTINGS_SIM_ACC, null)!!,
+                CaptureSettings::class.java
+            )
+        }
+
+        //
+        // Set sim img
+        //
+
+        if (sharedPref.contains(PREFERENCES_SETTINGS_SIM_IMG_PATH)) {
+            _simImgPath.value = sharedPref.getString(PREFERENCES_SETTINGS_SIM_IMG_PATH, null)!!
+        } else {
+            _simImgPath.value = null
+        }
+        if (!sharedPref.contains(PREFERENCES_SETTINGS_SIM_IMG)) {
+            val settings = CaptureSettings.DEFAULT_IMAGE
+            with(sharedPref.edit()) {
+                putString(PREFERENCES_SETTINGS_SIM_IMG, Gson().toJson(settings))
+                apply()
+            }
+            _simImgSettings.value = settings
+        } else {
+            _simImgSettings.value = Gson().fromJson(
+                sharedPref.getString(PREFERENCES_SETTINGS_SIM_IMG, null)!!,
                 CaptureSettings::class.java
             )
         }
@@ -203,7 +296,7 @@ class MyApplication : Application() {
             putString(PREFERENCES_SETTINGS_ACCELEROMETER, Gson().toJson(settings))
             apply()
         }
-        _settingsAccel.value = settings
+        _settingsAcc.value = settings
     }
 
     fun updateSettingsSound(settings: CaptureSettings) {
@@ -212,5 +305,61 @@ class MyApplication : Application() {
             apply()
         }
         _settingsSound.value = settings
+    }
+
+
+    fun updateSimAccSettings(settings: CaptureSettings) {
+        with(sharedPref.edit()) {
+            putString(PREFERENCES_SETTINGS_SIM_ACC, Gson().toJson(settings))
+            apply()
+        }
+        _simAccSettings.value = settings
+    }
+
+    fun updateSimAccPath(path: String?) {
+        if (path == null) updateSimAccSettings(simAccSettings.value!!.setEnabled(false))
+
+        with(sharedPref.edit()) {
+            putString(PREFERENCES_SETTINGS_SIM_ACC_PATH, path)
+            apply()
+        }
+        _simAccPath.value = path
+
+    }
+
+    fun updateSimImgSettings(settings: CaptureSettings) {
+        with(sharedPref.edit()) {
+            putString(PREFERENCES_SETTINGS_SIM_IMG, Gson().toJson(settings))
+            apply()
+        }
+        _simImgSettings.value = settings
+    }
+
+    fun updateSimImgPath(path: String?) {
+        if (path == null) updateSimImgSettings(simImgSettings.value!!.setEnabled(false))
+
+        with(sharedPref.edit()) {
+            putString(PREFERENCES_SETTINGS_SIM_IMG_PATH, path)
+            apply()
+        }
+        _simImgPath.value = path
+    }
+
+    fun updateSimSoundSettings(settings: CaptureSettings) {
+        with(sharedPref.edit()) {
+            putString(PREFERENCES_SETTINGS_SIM_SOUND, Gson().toJson(settings))
+            apply()
+        }
+        _simSoundSettings.value = settings
+    }
+
+    fun updateSimSoundPath(path: String?) {
+        if (path == null) updateSimSoundSettings(simSoundSettings.value!!.setEnabled(false))
+
+        with(sharedPref.edit()) {
+            putString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, path)
+            apply()
+        }
+        _simSoundPath.value = path
     }
 }

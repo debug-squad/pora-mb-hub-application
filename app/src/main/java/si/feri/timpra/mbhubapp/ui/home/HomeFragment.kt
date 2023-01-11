@@ -38,64 +38,63 @@ class HomeFragment : Fragment() {
             activity.takePhoto()
         }
 
+        //
+        //
+        //
 
-        val accInterval = binding.accInterval
-        val accDuration = binding.accDuration
-        val accEnabled = binding.accEnable
-        app.settingsAccel.observe(viewLifecycleOwner) {
-            accInterval.text = Html.fromHtml(
+        app.settingsAcc.observe(viewLifecycleOwner) {
+            binding.accInterval.text = Html.fromHtml(
                 getString(R.string.home_acc_interval, it.formatInterval()),
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
-            accDuration.text = Html.fromHtml(
+            binding.accDuration.text = Html.fromHtml(
                 getString(R.string.home_acc_duration, it.formatDuration()),
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
-            accEnabled.isChecked = it.enabled
+            binding.enableAcc.isChecked = it.enabled
         }
-        accEnabled.setOnCheckedChangeListener { _, isChecked ->
-            app.updateSettingsAccelerometer(app.settingsAccel.value!!.setEnabled(isChecked))
+        binding.enableAcc.setOnCheckedChangeListener { _, isChecked ->
+            app.updateSettingsAccelerometer(app.settingsAcc.value!!.setEnabled(isChecked))
         }
-
-        val soundInterval = binding.soundInterval
-        val soundDuration = binding.soundDuration
-        val soundEnabled = binding.accEnable
-        app.settingsSound.observe(viewLifecycleOwner) {
-            soundInterval.text = Html.fromHtml(
-                getString(R.string.home_acc_interval, it.formatInterval()),
-                HtmlCompat.FROM_HTML_MODE_COMPACT
-            )
-            soundDuration.text = Html.fromHtml(
-                getString(R.string.home_acc_duration, it.formatDuration()),
-                HtmlCompat.FROM_HTML_MODE_COMPACT
-            )
-            soundEnabled.isChecked = it.enabled
-        }
-        soundEnabled.setOnCheckedChangeListener { _, isChecked ->
-            app.updateSettingsSound(app.settingsSound.value!!.setEnabled(isChecked))
-        }
-
-
-        binding.cardSound.setOnLongClickListener {
+        binding.cardAcc.setOnLongClickListener {
             CaptureSettingsFragment.startDialog(
-                requireActivity(),
-                viewLifecycleOwner,
-                app.settingsSound.value!!
-            ) {
-                app.updateSettingsSound(it)
-            }
-            false
-        }
-        binding.cardAccel.setOnLongClickListener {
-            CaptureSettingsFragment.startDialog(
-                requireActivity(),
-                viewLifecycleOwner,
-                app.settingsSound.value!!
+                requireActivity(), viewLifecycleOwner, app.settingsSound.value!!
             ) {
                 app.updateSettingsAccelerometer(it)
             }
             false
         }
+
+        //
+        //
+        //
+
+        app.settingsSound.observe(viewLifecycleOwner) {
+            binding.soundInterval.text = Html.fromHtml(
+                getString(R.string.home_acc_interval, it.formatInterval()),
+                HtmlCompat.FROM_HTML_MODE_COMPACT
+            )
+            binding.soundDuration.text = Html.fromHtml(
+                getString(R.string.home_acc_duration, it.formatDuration()),
+                HtmlCompat.FROM_HTML_MODE_COMPACT
+            )
+            binding.enableSound.isChecked = it.enabled
+        }
+        binding.enableSound.setOnCheckedChangeListener { _, isChecked ->
+            app.updateSettingsSound(app.settingsSound.value!!.setEnabled(isChecked))
+        }
+        binding.cardSound.setOnLongClickListener {
+            CaptureSettingsFragment.startDialog(
+                requireActivity(), viewLifecycleOwner, app.settingsSound.value!!
+            ) {
+                app.updateSettingsSound(it)
+            }
+            false
+        }
+
+        //
+        //
+        //
 
         return root
     }

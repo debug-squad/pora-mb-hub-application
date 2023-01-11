@@ -24,13 +24,18 @@
     <string name="sim_longitude"><![CDATA[<b>Longitude:</b> %f]]></string>
     <string name="sim_latitude"><![CDATA[<b>Latitude:</b> %f]]></string>
     <string name="sim_set_location">Set Location</string>
+    <string name="sim_select_accelerometer">Select accelerometer</string>
+    <string name="sim_file_path">File %s</string>
+    <string name="sim_select_sound">Select sound</string>
+    <string name="sim_select_image">Select image</string>
+    <string name="sim_reset">Reset</string>
 
     <!-- -->
     <string name="dash_take_picture">Take picture</string>
     <string name="home_acc_title"><b>Accelerometer</b></string>
     <string name="home_acc_interval"><![CDATA[<b>Every:</b> %s]]></string>
     <string name="home_acc_duration"><![CDATA[<b>Duration:</b> %s]]></string>
-
+    <string name="home_img_title"><b>Image</b></string>
     <string name="home_sound_title"><b>Sound</b></string>
 
     <!-- -->

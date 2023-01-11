@@ -8,6 +8,7 @@ class CaptureSettings(val enabled: Boolean, val duration: Long, val interval: Lo
     companion object {
         val DEFAULT_SOUND = CaptureSettings(false, 5000L, 1000L * 60L * 10L)
         val DEFAULT_ACCELEROMETER = CaptureSettings(false, 5000L, 1000L * 60L * 10L)
+        val DEFAULT_IMAGE = CaptureSettings(false, 5000L, 1000L * 60L * 10L)
 
         fun parse(v: String): Long? {
             try {
