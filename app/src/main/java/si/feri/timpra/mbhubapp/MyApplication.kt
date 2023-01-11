@@ -16,11 +16,14 @@ import com.google.gson.Gson
 import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client
 import org.osmdroid.util.GeoPoint
+import si.feri.timpra.mbhubapp.data.CaptureSettings
 import java.util.*
 
 const val MY_SP_FILE_NAME = "myshared.data"
 const val PREFERENCES_ID = "ID"
 const val PREFERENCES_SIMULATION_POS = "SIMULATION_POS"
+const val PREFERENCES_SETTINGS_ACCELEROMETER = "SETTINGS_ACCELEROMETER"
+const val PREFERENCES_SETTINGS_SOUND = "SETTINGS_SOUND"
 const val MQTT_BROKER_URL = "125202eb8708473eb5d18de1dacaa45a.s2.eu.hivemq.cloud"
 const val MQTT_BROKER_PORT = 8883
 const val MQTT_USERNAME = "mb-hub-client"
@@ -45,6 +48,11 @@ class MyApplication : Application() {
     private val _simulationPosition = MutableLiveData<GeoPoint>()
     val simulationPosition: LiveData<GeoPoint> = _simulationPosition
 
+    private val _settingsAccel = MutableLiveData<CaptureSettings>()
+    val settingsAccel: LiveData<CaptureSettings> = _settingsAccel
+
+    private val _settingsSound = MutableLiveData<CaptureSettings>()
+    val settingsSound: LiveData<CaptureSettings> = _settingsSound
 
     override fun onCreate() {
         super.onCreate()
@@ -83,6 +91,42 @@ class MyApplication : Application() {
         } else {
             _simulationPosition.value = Gson().fromJson(
                 sharedPref.getString(PREFERENCES_SIMULATION_POS, null)!!, GeoPoint::class.java
+            )
+        }
+
+        //
+        // Set simulation accelerometer
+        //
+
+        if (!sharedPref.contains(PREFERENCES_SETTINGS_ACCELEROMETER)) {
+            val settings = CaptureSettings.DEFAULT_ACCELEROMETER
+            with(sharedPref.edit()) {
+                putString(PREFERENCES_SETTINGS_ACCELEROMETER, Gson().toJson(settings))
+                apply()
+            }
+            _settingsAccel.value = settings
+        } else {
+            _settingsAccel.value = Gson().fromJson(
+                sharedPref.getString(PREFERENCES_SETTINGS_ACCELEROMETER, null)!!,
+                CaptureSettings::class.java
+            )
+        }
+
+        //
+        // Set simulation sound
+        //
+
+        if (!sharedPref.contains(PREFERENCES_SETTINGS_SOUND)) {
+            val settings = CaptureSettings.DEFAULT_SOUND
+            with(sharedPref.edit()) {
+                putString(PREFERENCES_SETTINGS_SOUND, Gson().toJson(settings))
+                apply()
+            }
+            _settingsSound.value = settings
+        } else {
+            _settingsSound.value = Gson().fromJson(
+                sharedPref.getString(PREFERENCES_SETTINGS_SOUND, null)!!,
+                CaptureSettings::class.java
             )
         }
 
@@ -152,5 +196,21 @@ class MyApplication : Application() {
             apply()
         }
         _simulationPosition.value = geo
+    }
+
+    fun updateSettingsAccelerometer(settings: CaptureSettings) {
+        with(sharedPref.edit()) {
+            putString(PREFERENCES_SETTINGS_ACCELEROMETER, Gson().toJson(settings))
+            apply()
+        }
+        _settingsAccel.value = settings
+    }
+
+    fun updateSettingsSound(settings: CaptureSettings) {
+        with(sharedPref.edit()) {
+            putString(PREFERENCES_SETTINGS_SOUND, Gson().toJson(settings))
+            apply()
+        }
+        _settingsSound.value = settings
     }
 }

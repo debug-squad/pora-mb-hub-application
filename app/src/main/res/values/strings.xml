@@ -3,6 +3,9 @@
     <string name="app_name">MB-Hub-App</string>
 
     <!-- -->
+    <string name="enable">Enable</string>
+
+    <!-- -->
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_settings">Settings</string>
@@ -24,4 +27,15 @@
 
     <!-- -->
     <string name="dash_take_picture">Take picture</string>
+    <string name="home_acc_title"><b>Accelerometer</b></string>
+    <string name="home_acc_interval"><![CDATA[<b>Every:</b> %s]]></string>
+    <string name="home_acc_duration"><![CDATA[<b>Duration:</b> %s]]></string>
+
+    <string name="home_sound_title"><b>Sound</b></string>
+
+    <!-- -->
+    <string name="settings_picker_interval"><b>Interval</b></string>
+    <string name="settings_picker_duration"><b>Duration</b></string>
+    <string name="settings_picker_apply">Apply</string>
+    <string name="settings_picker_cancel">Cancel</string>
 </resources>
