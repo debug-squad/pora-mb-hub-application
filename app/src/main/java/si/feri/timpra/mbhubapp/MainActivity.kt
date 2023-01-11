@@ -35,6 +35,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.properties.Delegates
@@ -465,7 +466,11 @@ class MainActivity : AppCompatActivity() {
                 val contentUri = result.data?.data ?: return@registerForActivityResult
                 val dest = File(this.externalCacheDir, "imgSimulator.jpg")
                 try {
-                    Files.copy(contentResolver.openInputStream(contentUri), dest.toPath())
+                    Files.copy(
+                        contentResolver.openInputStream(contentUri),
+                        dest.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING
+                    )
                     app.updateSimImgPath(dest)
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -482,7 +487,11 @@ class MainActivity : AppCompatActivity() {
                 val contentUri = result.data?.data ?: return@registerForActivityResult
                 val dest = File(this.externalCacheDir, "audioSimulator.mp3")
                 try {
-                    Files.copy(contentResolver.openInputStream(contentUri), dest.toPath())
+                    Files.copy(
+                        contentResolver.openInputStream(contentUri),
+                        dest.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING
+                    )
                     app.updateSimSoundPath(dest)
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -498,7 +507,11 @@ class MainActivity : AppCompatActivity() {
                 val contentUri = result.data?.data ?: return@registerForActivityResult
                 val dest = File(this.externalCacheDir, "accSimulator.json")
                 try {
-                    Files.copy(contentResolver.openInputStream(contentUri), dest.toPath())
+                    Files.copy(
+                        contentResolver.openInputStream(contentUri),
+                        dest.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING
+                    )
                     app.updateSimAccPath(dest)
                 } catch (e: IOException) {
                     e.printStackTrace()

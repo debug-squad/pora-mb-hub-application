@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.DatabaseReference
@@ -385,6 +386,7 @@ class MyApplication : Application() {
         ).toByteArray()
 
     fun sendSound(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
+        Toast.makeText(this, "Sending sound", Toast.LENGTH_SHORT).show()
         mqttClient.toBlocking()
             .publish(
                 Mqtt5Publish.builder()
@@ -401,6 +403,7 @@ class MyApplication : Application() {
     }
 
     fun sendImg(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
+        Toast.makeText(this, "Sending image", Toast.LENGTH_SHORT).show()
         mqttClient.toBlocking().publish(
             Mqtt5Publish.builder().topic("picture/$clientID")
                 .payload(
@@ -415,6 +418,7 @@ class MyApplication : Application() {
     }
 
     fun sendAcc(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
+        Toast.makeText(this, "Sending acceleration", Toast.LENGTH_SHORT).show()
         mqttClient.toBlocking()
             .publish(
                 Mqtt5Publish.builder().topic("accel/$clientID")
