@@ -386,6 +386,7 @@ class MyApplication : Application() {
         ).toByteArray()
 
     fun sendSound(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
+        if(mqttConnected.value != true) return;
         Toast.makeText(this, "Sending sound", Toast.LENGTH_SHORT).show()
         mqttClient.toBlocking()
             .publish(
@@ -403,6 +404,7 @@ class MyApplication : Application() {
     }
 
     fun sendImg(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
+        if(mqttConnected.value != true) return;
         Toast.makeText(this, "Sending image", Toast.LENGTH_SHORT).show()
         mqttClient.toBlocking().publish(
             Mqtt5Publish.builder().topic("picture/$clientID")
@@ -418,6 +420,7 @@ class MyApplication : Application() {
     }
 
     fun sendAcc(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
+        if(mqttConnected.value != true) return;
         Toast.makeText(this, "Sending acceleration", Toast.LENGTH_SHORT).show()
         mqttClient.toBlocking()
             .publish(
