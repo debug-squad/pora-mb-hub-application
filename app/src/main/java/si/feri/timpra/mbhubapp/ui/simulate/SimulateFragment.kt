@@ -1,6 +1,5 @@
 package si.feri.timpra.mbhubapp.ui.simulate
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
@@ -9,12 +8,13 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import si.feri.timpra.mbhubapp.MainActivity
 import si.feri.timpra.mbhubapp.MyApplication
 import si.feri.timpra.mbhubapp.R
 import si.feri.timpra.mbhubapp.databinding.FragmentSimulateBinding
-import si.feri.timpra.mbhubapp.dialog.CaptureSettingsFragment
+import si.feri.timpra.mbhubapp.dialog.AccSettingsFragment
+import si.feri.timpra.mbhubapp.dialog.ImgSettingsFragment
 import si.feri.timpra.mbhubapp.dialog.MapPickerFragment
+import si.feri.timpra.mbhubapp.dialog.SoundSettingsFragment
 
 class SimulateFragment : Fragment() {
     private var _binding: FragmentSimulateBinding? = null
@@ -59,35 +59,13 @@ class SimulateFragment : Fragment() {
         //
         //
 
-        binding.btnSelectImg.setOnClickListener {
-            if (app.simImgPath.value == null) {
-                var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
-                chooseFile.type = "image/*"
-                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file")
-                (activity as MainActivity).resultSelectFileImg.launch(chooseFile)
-            } else {
-                app.updateSimImgPath(null)
-            }
-        }
-        app.simImgPath.observe(viewLifecycleOwner) {
-            binding.optionsImage.visibility = if (it == null) View.GONE else View.VISIBLE
-            binding.btnSelectImg.text =
-                if (it == null) getString(R.string.sim_select_image) else getString(R.string.sim_reset)
-            if (it != null) {
-                binding.txtPathImg.text = Html.fromHtml(
-                    getString(R.string.sim_file_path, it.name),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
-                )
-            }
-        }
         app.simImgSettings.observe(viewLifecycleOwner) {
             binding.imgInterval.text = Html.fromHtml(
                 getString(R.string.home_acc_interval, it.formatInterval()),
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
-            binding.imgdDuration.text = Html.fromHtml(
-                getString(R.string.home_acc_duration, it.formatDuration()),
+            binding.txtPathImg.text = Html.fromHtml(
+                getString(R.string.sim_file_path, it.text()),
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
             binding.enableImg.isChecked = it.enabled
@@ -96,10 +74,10 @@ class SimulateFragment : Fragment() {
             app.updateSimImgSettings(app.simImgSettings.value!!.setEnabled(isChecked))
         }
         binding.cardImg.setOnLongClickListener {
-            CaptureSettingsFragment.startDialog(
+            ImgSettingsFragment.startDialog(
                 requireActivity(),
                 viewLifecycleOwner,
-                app.simImgSettings.value!!
+                app.simImgSettings.value!!,
             ) {
                 app.updateSimImgSettings(it)
             }
@@ -110,35 +88,13 @@ class SimulateFragment : Fragment() {
         //
         //
 
-        binding.btnSelectSound.setOnClickListener {
-            if (app.simSoundPath.value == null) {
-                var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
-                chooseFile.type = "audio/*"
-                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file")
-                (activity as MainActivity).resultSelectFileSound.launch(chooseFile)
-            } else {
-                app.updateSimSoundPath(null)
-            }
-        }
-        app.simSoundPath.observe(viewLifecycleOwner) {
-            binding.optionsSound.visibility = if (it == null) View.GONE else View.VISIBLE
-            binding.btnSelectSound.text =
-                if (it == null) getString(R.string.sim_select_sound) else getString(R.string.sim_reset)
-            if (it != null) {
-                binding.txtPathSound.text = Html.fromHtml(
-                    getString(R.string.sim_file_path, it.name),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
-                )
-            }
-        }
         app.simSoundSettings.observe(viewLifecycleOwner) {
             binding.soundInterval.text = Html.fromHtml(
                 getString(R.string.home_acc_interval, it.formatInterval()),
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
-            binding.soundDuration.text = Html.fromHtml(
-                getString(R.string.home_acc_duration, it.formatDuration()),
+            binding.txtPathSound.text = Html.fromHtml(
+                getString(R.string.sim_file_path, it.text()),
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
             binding.enableSound.isChecked = it.enabled
@@ -147,10 +103,10 @@ class SimulateFragment : Fragment() {
             app.updateSimSoundSettings(app.simSoundSettings.value!!.setEnabled(isChecked))
         }
         binding.cardSound.setOnLongClickListener {
-            CaptureSettingsFragment.startDialog(
+            SoundSettingsFragment.startDialog(
                 requireActivity(),
                 viewLifecycleOwner,
-                app.simSoundSettings.value!!
+                app.simSoundSettings.value!!,
             ) {
                 app.updateSimSoundSettings(it)
             }
@@ -161,35 +117,13 @@ class SimulateFragment : Fragment() {
         //
         //
 
-        binding.btnSelectAcc.setOnClickListener {
-            if (app.simAccPath.value == null) {
-                var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
-                chooseFile.type = "application/json"
-                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file")
-                (activity as MainActivity).resultSelectFileAcc.launch(chooseFile)
-            } else {
-                app.updateSimAccPath(null)
-            }
-        }
-        app.simAccPath.observe(viewLifecycleOwner) {
-            binding.optionsAcc.visibility = if (it == null) View.GONE else View.VISIBLE
-            binding.btnSelectAcc.text =
-                if (it == null) getString(R.string.sim_select_accelerometer) else getString(R.string.sim_reset)
-            if (it != null) {
-                binding.txtPathAcc.text = Html.fromHtml(
-                    getString(R.string.sim_file_path, it.name),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
-                )
-            }
-        }
         app.simAccSettings.observe(viewLifecycleOwner) {
             binding.accInterval.text = Html.fromHtml(
                 getString(R.string.home_acc_interval, it.formatInterval()),
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
-            binding.accDuration.text = Html.fromHtml(
-                getString(R.string.home_acc_duration, it.formatDuration()),
+            binding.txtPathAcc.text = Html.fromHtml(
+                getString(R.string.sim_file_path, it.text()),
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
             binding.enableAcc.isChecked = it.enabled
@@ -198,7 +132,7 @@ class SimulateFragment : Fragment() {
             app.updateSimAccSettings(app.simAccSettings.value!!.setEnabled(isChecked))
         }
         binding.cardAcc.setOnLongClickListener {
-            CaptureSettingsFragment.startDialog(
+            AccSettingsFragment.startDialog(
                 requireActivity(),
                 viewLifecycleOwner,
                 app.simAccSettings.value!!

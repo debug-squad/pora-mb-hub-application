@@ -9,40 +9,38 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.LifecycleOwner
+import si.feri.timpra.mbhubapp.R
 import si.feri.timpra.mbhubapp.data.CaptureSettings
-import si.feri.timpra.mbhubapp.databinding.FragmentCaptureSettingsBinding
-import kotlin.properties.Delegates
+import si.feri.timpra.mbhubapp.data.SoundSettings
+import si.feri.timpra.mbhubapp.databinding.FragmentSoundSettingsBinding
 
 private const val ARG_SETTINGS = "ARG_SETTINGS"
-private const val ARG_DURRATION = "ARG_DISPLAY"
 private const val REQUEST_KEY = "REQUEST_KEY"
-private const val TAG = "CaptureSettingsFragment"
+private const val TAG = "SoundSettingsFragment"
 
 
 /**
  * A simple [Fragment] subclass.
  * create an instance of this fragment.
  */
-class CaptureSettingsFragment : DialogFragment() {
-    private var _binding: FragmentCaptureSettingsBinding? = null
+class SoundSettingsFragment : DialogFragment() {
+    private var _binding: FragmentSoundSettingsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var value: CaptureSettings
-    private var hideDuration by Delegates.notNull<Boolean>()
+    private lateinit var value: SoundSettings
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            this.value = it.getSerializable(ARG_SETTINGS) as CaptureSettings
-            this.hideDuration = it.getBoolean(ARG_DURRATION)
+            this.value = it.getSerializable(ARG_SETTINGS) as SoundSettings
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCaptureSettingsBinding.inflate(inflater, container, false)
+        _binding = FragmentSoundSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -53,24 +51,21 @@ class CaptureSettingsFragment : DialogFragment() {
         //
         //
 
-        binding.inputDuration.setText(value.formatDuration())
         binding.inputInterval.setText(value.formatInterval())
+        binding.typeGroup.check(
+            when (value.file) {
+                R.raw.quiet -> R.id.optionQuiet
+                R.raw.noisy -> R.id.optionNoisy
+                else -> R.raw.active
+            }
+        )
+
         binding.swEnabled.isChecked = value.enabled
 
         //
         //
         //
 
-        binding.inputDuration.visibility = if (hideDuration) View.GONE else View.VISIBLE
-        binding.textView3.visibility = if (hideDuration) View.GONE else View.VISIBLE
-
-        //
-        //
-        //
-
-        binding.inputDuration.setOnClickListener {
-            binding.inputDuration.error = null
-        }
         binding.inputInterval.setOnClickListener {
             binding.inputInterval.error = null
         }
@@ -84,18 +79,18 @@ class CaptureSettingsFragment : DialogFragment() {
                 return@setOnClickListener
             }
 
-            val duration = CaptureSettings.parse(binding.inputDuration.text.toString())
-            if (duration == null) {
-                binding.inputDuration.error = "Invalid format"
-                return@setOnClickListener
+            val file = when (binding.typeGroup.checkedRadioButtonId) {
+                R.id.optionQuiet -> R.raw.quiet
+                R.id.optionNoisy -> R.raw.noisy
+                else -> return@setOnClickListener
             }
 
             setFragmentResult(
                 REQUEST_KEY, resultBundle(
-                    CaptureSettings(
+                    SoundSettings(
                         enabled = enabled,
-                        duration = duration,
                         interval = interval,
+                        file = file,
                     )
                 )
             )
@@ -121,35 +116,32 @@ class CaptureSettingsFragment : DialogFragment() {
          * @return A new instance of fragment InputFragment.
          */
         @JvmStatic
-        fun newInstance(settings: CaptureSettings, hideDuration: Boolean) =
-            CaptureSettingsFragment().apply {
-                arguments = newBundle(settings, hideDuration)
-            }
-
-        private fun newBundle(settings: CaptureSettings, hideDuration: Boolean) = Bundle().apply {
-            putSerializable(ARG_SETTINGS, settings)
-            putBoolean(ARG_DURRATION, hideDuration)
+        fun newInstance(settings: SoundSettings) = SoundSettingsFragment().apply {
+            arguments = newBundle(settings)
         }
 
-        fun resultBundle(settings: CaptureSettings) = Bundle().apply {
+        private fun newBundle(settings: SoundSettings) = Bundle().apply {
+            putSerializable(ARG_SETTINGS, settings)
+        }
+
+        fun resultBundle(settings: SoundSettings) = Bundle().apply {
             putSerializable(ARG_SETTINGS, settings)
         }
 
         fun startDialog(
             activity: FragmentActivity,
             viewLifecycleOwner: LifecycleOwner,
-            settings: CaptureSettings,
-            hideDuration: Boolean = false,
-            callback: (CaptureSettings) -> Unit
+            settings: SoundSettings,
+            callback: (SoundSettings) -> Unit
         ) {
-            val frag = newInstance(settings, hideDuration)
+            val frag = newInstance(settings)
             val supportFragmentManager = activity.supportFragmentManager
             // we have to implement setFragmentResultListener
             supportFragmentManager.setFragmentResultListener(
                 REQUEST_KEY, viewLifecycleOwner
             ) { resultKey, bundle ->
                 if (resultKey == REQUEST_KEY) {
-                    val resSettings = bundle.getSerializable(ARG_SETTINGS) as CaptureSettings
+                    val resSettings = bundle.getSerializable(ARG_SETTINGS) as SoundSettings
                     callback(resSettings)
                 }
             }

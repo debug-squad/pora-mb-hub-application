@@ -33,9 +33,7 @@ import org.osmdroid.config.Configuration
 import si.feri.timpra.mbhubapp.databinding.ActivityMainBinding
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.IOException
 import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.properties.Delegates
@@ -204,29 +202,27 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     app.simulationPosition.value?.let { loc ->
-                        app.simAccPath.value?.toPath()?.let { path ->
-                            val data = try {
-                                Files.readAllBytes(path)
-                            } catch (e: IOException) {
-                                e.printStackTrace()
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Failed to read acc file",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                app.updateSimAccPath(null)
-                                return@run
-                            }
-                            app.sendAcc(
-                                time = LocalDateTime.now(),
-                                latitude = loc.latitude,
-                                longitude = loc.longitude,
-                                data = data
-                            )
+                        val data = try {
+                            resources.openRawResource(it.file).readBytes()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Toast.makeText(
+                                applicationContext,
+                                "Failed to read acc file",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            app.updateSimAccSettings(app.simAccSettings.value!!.setEnabled(false))
+                            return@run
                         }
+                        app.sendAcc(
+                            time = LocalDateTime.now(),
+                            latitude = loc.latitude,
+                            longitude = loc.longitude,
+                            data = data
+                        )
                     }
                 }
-            }, 0, it.interval + it.duration)
+            }, 0, it.interval)
         }
 
         //
@@ -249,29 +245,27 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     app.simulationPosition.value?.let { loc ->
-                        app.simImgPath.value?.toPath()?.let { path ->
-                            val data = try {
-                                Files.readAllBytes(path)
-                            } catch (e: IOException) {
-                                e.printStackTrace()
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Failed to read img file",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                app.updateSimImgPath(null)
-                                return@run
-                            }
-                            app.sendImg(
-                                time = LocalDateTime.now(),
-                                latitude = loc.latitude,
-                                longitude = loc.longitude,
-                                data = data
-                            )
+                        val data = try {
+                            resources.openRawResource(it.file).readBytes()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Toast.makeText(
+                                applicationContext,
+                                "Failed to read img file",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            app.updateSimImgSettings(app.simImgSettings.value!!.setEnabled(false))
+                            return@run
                         }
+                        app.sendImg(
+                            time = LocalDateTime.now(),
+                            latitude = loc.latitude,
+                            longitude = loc.longitude,
+                            data = data
+                        )
                     }
                 }
-            }, 0, it.interval + it.duration)
+            }, 0, it.interval)
         }
 
         //
@@ -294,29 +288,27 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     app.simulationPosition.value?.let { loc ->
-                        app.simSoundPath.value?.toPath()?.let { path ->
-                            val data = try {
-                                Files.readAllBytes(path)
-                            } catch (e: IOException) {
-                                e.printStackTrace()
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Failed to read sound file",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                app.updateSimSoundPath(null)
-                                return@run
-                            }
-                            app.sendSound(
-                                time = LocalDateTime.now(),
-                                latitude = loc.latitude,
-                                longitude = loc.longitude,
-                                data = data
-                            )
+                        val data = try {
+                            resources.openRawResource(it.file).readBytes()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Toast.makeText(
+                                applicationContext,
+                                "Failed to read sound file",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            app.updateSimSoundSettings(app.simSoundSettings.value!!.setEnabled(false))
+                            return@run
                         }
+                        app.sendSound(
+                            time = LocalDateTime.now(),
+                            latitude = loc.latitude,
+                            longitude = loc.longitude,
+                            data = data
+                        )
                     }
                 }
-            }, 0, it.interval + it.duration)
+            }, 0, it.interval)
         }
     }
 
@@ -453,70 +445,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    //
-    //
-    //
-
-    var resultSelectFileImg =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                Toast.makeText(this, "Selected img file", Toast.LENGTH_SHORT).show()
-                val contentUri = result.data?.data ?: return@registerForActivityResult
-                val dest = File(this.externalCacheDir, "imgSimulator.jpg")
-                try {
-                    Files.copy(
-                        contentResolver.openInputStream(contentUri),
-                        dest.toPath(),
-                        StandardCopyOption.REPLACE_EXISTING
-                    )
-                    app.updateSimImgPath(dest)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    Toast.makeText(this, "Failed ot select file", Toast.LENGTH_SHORT).show()
-                }
-
-            }
-        }
-
-    var resultSelectFileSound =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                Toast.makeText(this, "Selected sound file", Toast.LENGTH_SHORT).show()
-                val contentUri = result.data?.data ?: return@registerForActivityResult
-                val dest = File(this.externalCacheDir, "audioSimulator.mp3")
-                try {
-                    Files.copy(
-                        contentResolver.openInputStream(contentUri),
-                        dest.toPath(),
-                        StandardCopyOption.REPLACE_EXISTING
-                    )
-                    app.updateSimSoundPath(dest)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    Toast.makeText(this, "Failed ot select file", Toast.LENGTH_SHORT).show()
-                }
-
-            }
-        }
-    var resultSelectFileAcc =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                Toast.makeText(this, "Selected img file", Toast.LENGTH_SHORT).show()
-                val contentUri = result.data?.data ?: return@registerForActivityResult
-                val dest = File(this.externalCacheDir, "accSimulator.json")
-                try {
-                    Files.copy(
-                        contentResolver.openInputStream(contentUri),
-                        dest.toPath(),
-                        StandardCopyOption.REPLACE_EXISTING
-                    )
-                    app.updateSimAccPath(dest)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    Toast.makeText(this, "Failed ot select file", Toast.LENGTH_SHORT).show()
-                }
-
-            }
-        }
 }

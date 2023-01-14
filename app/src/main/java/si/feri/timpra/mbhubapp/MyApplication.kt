@@ -20,10 +20,13 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5Client
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
 import org.osmdroid.util.GeoPoint
 import si.feri.timpra.mbhubapp.data.CaptureSettings
-import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import android.net.Uri
+import si.feri.timpra.mbhubapp.data.AccSettings
+import si.feri.timpra.mbhubapp.data.ImgSettings
+import si.feri.timpra.mbhubapp.data.SoundSettings
 
 const val MY_SP_FILE_NAME = "myshared.data"
 const val PREFERENCES_ID = "ID"
@@ -68,21 +71,12 @@ class MyApplication : Application() {
     private val _settingsSound = MutableLiveData<CaptureSettings>()
     val settingsSound: LiveData<CaptureSettings> = _settingsSound
 
-
-    private val _simSoundPath = MutableLiveData<File?>()
-    val simSoundPath: LiveData<File?> = _simSoundPath
-    private val _simSoundSettings = MutableLiveData<CaptureSettings>()
-    val simSoundSettings: LiveData<CaptureSettings> = _simSoundSettings
-
-    private val _simAccPath = MutableLiveData<File?>()
-    val simAccPath: LiveData<File?> = _simAccPath
-    private val _simAccSettings = MutableLiveData<CaptureSettings>()
-    val simAccSettings: LiveData<CaptureSettings> = _simAccSettings
-
-    private val _simImgPath = MutableLiveData<File?>()
-    val simImgPath: LiveData<File?> = _simImgPath
-    private val _simImgSettings = MutableLiveData<CaptureSettings>()
-    val simImgSettings: LiveData<CaptureSettings> = _simImgSettings
+    private val _simSoundSettings = MutableLiveData<SoundSettings>()
+    val simSoundSettings: LiveData<SoundSettings> = _simSoundSettings
+    private val _simAccSettings = MutableLiveData<AccSettings>()
+    val simAccSettings: LiveData<AccSettings> = _simAccSettings
+    private val _simImgSettings = MutableLiveData<ImgSettings>()
+    val simImgSettings: LiveData<ImgSettings> = _simImgSettings
 
     override fun onCreate() {
         super.onCreate()
@@ -112,12 +106,11 @@ class MyApplication : Application() {
         //
 
         if (!sharedPref.contains(PREFERENCES_SIMULATION_POS)) {
-            val point = GeoPoint(46.557314, 15.637771)
+            _simulationPosition.value = GeoPoint(46.557314, 15.637771)
             with(sharedPref.edit()) {
-                putString(PREFERENCES_SIMULATION_POS, Gson().toJson(point))
+                putString(PREFERENCES_SIMULATION_POS, Gson().toJson(simulationPosition.value))
                 apply()
             }
-            _simulationPosition.value = point
         } else {
             _simulationPosition.value = Gson().fromJson(
                 sharedPref.getString(PREFERENCES_SIMULATION_POS, null)!!, GeoPoint::class.java
@@ -125,16 +118,15 @@ class MyApplication : Application() {
         }
 
         //
-        // Set simulation accelerometer
+        // Set accelerometer
         //
 
         if (!sharedPref.contains(PREFERENCES_SETTINGS_ACCELEROMETER)) {
-            val settings = CaptureSettings.DEFAULT_ACCELEROMETER
+            _settingsAcc.value = CaptureSettings.DEFAULT_ACCELEROMETER
             with(sharedPref.edit()) {
-                putString(PREFERENCES_SETTINGS_ACCELEROMETER, Gson().toJson(settings))
+                putString(PREFERENCES_SETTINGS_ACCELEROMETER, Gson().toJson(settingsAcc.value!!))
                 apply()
             }
-            _settingsAcc.value = settings
         } else {
             _settingsAcc.value = Gson().fromJson(
                 sharedPref.getString(PREFERENCES_SETTINGS_ACCELEROMETER, null)!!,
@@ -143,16 +135,15 @@ class MyApplication : Application() {
         }
 
         //
-        // Set simulation sound
+        // Set sound
         //
 
         if (!sharedPref.contains(PREFERENCES_SETTINGS_SOUND)) {
-            val settings = CaptureSettings.DEFAULT_SOUND
+            _settingsSound.value = CaptureSettings.DEFAULT_SOUND
             with(sharedPref.edit()) {
-                putString(PREFERENCES_SETTINGS_SOUND, Gson().toJson(settings))
+                putString(PREFERENCES_SETTINGS_SOUND, Gson().toJson(settingsSound.value!!))
                 apply()
             }
-            _settingsSound.value = settings
         } else {
             _settingsSound.value = Gson().fromJson(
                 sharedPref.getString(PREFERENCES_SETTINGS_SOUND, null)!!,
@@ -164,23 +155,16 @@ class MyApplication : Application() {
         // Set sim sound
         //
 
-        if (sharedPref.contains(PREFERENCES_SETTINGS_SIM_SOUND_PATH)) {
-            _simSoundPath.value =
-                File(sharedPref.getString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, null)!!)
-        } else {
-            _simSoundPath.value = null
-        }
         if (!sharedPref.contains(PREFERENCES_SETTINGS_SIM_SOUND)) {
-            val settings = CaptureSettings.DEFAULT_SOUND
+            _simSoundSettings.value = SoundSettings.DEFAULT
             with(sharedPref.edit()) {
-                putString(PREFERENCES_SETTINGS_SIM_SOUND, Gson().toJson(settings))
+                putString(PREFERENCES_SETTINGS_SIM_SOUND, Gson().toJson(simSoundSettings.value!!))
                 apply()
             }
-            _simSoundSettings.value = settings
         } else {
             _simSoundSettings.value = Gson().fromJson(
                 sharedPref.getString(PREFERENCES_SETTINGS_SIM_SOUND, null)!!,
-                CaptureSettings::class.java
+                SoundSettings::class.java
             )
         }
 
@@ -188,23 +172,17 @@ class MyApplication : Application() {
         // Set sim acc
         //
 
-        if (sharedPref.contains(PREFERENCES_SETTINGS_SIM_ACC_PATH)) {
-            _simAccPath.value =
-                File(sharedPref.getString(PREFERENCES_SETTINGS_SIM_ACC_PATH, null)!!)
-        } else {
-            _simAccPath.value = null
-        }
         if (!sharedPref.contains(PREFERENCES_SETTINGS_SIM_ACC)) {
-            val settings = CaptureSettings.DEFAULT_ACCELEROMETER
+            _simAccSettings.value = AccSettings.DEFAULT
             with(sharedPref.edit()) {
-                putString(PREFERENCES_SETTINGS_SIM_ACC, Gson().toJson(settings))
+                putString(PREFERENCES_SETTINGS_SIM_ACC, Gson().toJson(simAccSettings.value!!))
                 apply()
             }
-            _simAccSettings.value = settings
+
         } else {
             _simAccSettings.value = Gson().fromJson(
                 sharedPref.getString(PREFERENCES_SETTINGS_SIM_ACC, null)!!,
-                CaptureSettings::class.java
+                AccSettings::class.java
             )
         }
 
@@ -212,23 +190,17 @@ class MyApplication : Application() {
         // Set sim img
         //
 
-        if (sharedPref.contains(PREFERENCES_SETTINGS_SIM_IMG_PATH)) {
-            _simImgPath.value =
-                File(sharedPref.getString(PREFERENCES_SETTINGS_SIM_IMG_PATH, null)!!)
-        } else {
-            _simImgPath.value = null
-        }
         if (!sharedPref.contains(PREFERENCES_SETTINGS_SIM_IMG)) {
-            val settings = CaptureSettings.DEFAULT_IMAGE
+            _simImgSettings.value = ImgSettings.DEFAULT
             with(sharedPref.edit()) {
-                putString(PREFERENCES_SETTINGS_SIM_IMG, Gson().toJson(settings))
+                putString(PREFERENCES_SETTINGS_SIM_IMG, Gson().toJson(simImgSettings.value!!))
                 apply()
             }
-            _simImgSettings.value = settings
+
         } else {
             _simImgSettings.value = Gson().fromJson(
                 sharedPref.getString(PREFERENCES_SETTINGS_SIM_IMG, null)!!,
-                CaptureSettings::class.java
+                ImgSettings::class.java
             )
         }
 
@@ -317,7 +289,7 @@ class MyApplication : Application() {
     }
 
 
-    fun updateSimAccSettings(settings: CaptureSettings) {
+    fun updateSimAccSettings(settings: AccSettings) {
         with(sharedPref.edit()) {
             putString(PREFERENCES_SETTINGS_SIM_ACC, Gson().toJson(settings))
             apply()
@@ -325,18 +297,7 @@ class MyApplication : Application() {
         _simAccSettings.postValue(settings)
     }
 
-    fun updateSimAccPath(path: File?) {
-        if (path == null) updateSimAccSettings(simAccSettings.value!!.setEnabled(false))
-
-        with(sharedPref.edit()) {
-            putString(PREFERENCES_SETTINGS_SIM_ACC_PATH, path?.toURI()?.toString())
-            apply()
-        }
-        _simAccPath.postValue(path)
-
-    }
-
-    fun updateSimImgSettings(settings: CaptureSettings) {
+    fun updateSimImgSettings(settings: ImgSettings) {
         with(sharedPref.edit()) {
             putString(PREFERENCES_SETTINGS_SIM_IMG, Gson().toJson(settings))
             apply()
@@ -344,34 +305,13 @@ class MyApplication : Application() {
         _simImgSettings.postValue(settings)
     }
 
-    fun updateSimImgPath(path: File?) {
-        if (path == null) updateSimImgSettings(simImgSettings.value!!.setEnabled(false))
-
-        with(sharedPref.edit()) {
-            putString(PREFERENCES_SETTINGS_SIM_IMG_PATH, path?.toURI()?.toString())
-            apply()
-        }
-        _simImgPath.postValue(path)
-    }
-
-    fun updateSimSoundSettings(settings: CaptureSettings) {
+    fun updateSimSoundSettings(settings: SoundSettings) {
         with(sharedPref.edit()) {
             putString(PREFERENCES_SETTINGS_SIM_SOUND, Gson().toJson(settings))
             apply()
         }
         _simSoundSettings.postValue(settings)
     }
-
-    fun updateSimSoundPath(path: File?) {
-        if (path == null) updateSimSoundSettings(simSoundSettings.value!!.setEnabled(false))
-
-        with(sharedPref.edit()) {
-            putString(PREFERENCES_SETTINGS_SIM_SOUND_PATH, path?.toURI()?.toString())
-            apply()
-        }
-        _simSoundPath.postValue(path)
-    }
-
     //
     //
     //
@@ -386,7 +326,7 @@ class MyApplication : Application() {
         ).toByteArray()
 
     fun sendSound(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
-        if(mqttConnected.value != true) return;
+        if (mqttConnected.value != true) return;
         Toast.makeText(this, "Sending sound", Toast.LENGTH_SHORT).show()
         mqttClient.toBlocking()
             .publish(
@@ -404,7 +344,7 @@ class MyApplication : Application() {
     }
 
     fun sendImg(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
-        if(mqttConnected.value != true) return;
+        if (mqttConnected.value != true) return;
         Toast.makeText(this, "Sending image", Toast.LENGTH_SHORT).show()
         mqttClient.toBlocking().publish(
             Mqtt5Publish.builder().topic("picture/$clientID")
@@ -420,7 +360,7 @@ class MyApplication : Application() {
     }
 
     fun sendAcc(time: LocalDateTime, latitude: Double, longitude: Double, data: ByteArray) {
-        if(mqttConnected.value != true) return;
+        if (mqttConnected.value != true) return;
         Toast.makeText(this, "Sending acceleration", Toast.LENGTH_SHORT).show()
         mqttClient.toBlocking()
             .publish(

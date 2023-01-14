@@ -25,7 +25,7 @@
     <string name="sim_latitude"><![CDATA[<b>Latitude:</b> %f]]></string>
     <string name="sim_set_location">Set Location</string>
     <string name="sim_select_accelerometer">Select accelerometer</string>
-    <string name="sim_file_path">File %s</string>
+    <string name="sim_file_path"><![CDATA[<b>File:</b> %s]]></string>
     <string name="sim_select_sound">Select sound</string>
     <string name="sim_select_image">Select image</string>
     <string name="sim_reset">Reset</string>
@@ -43,4 +43,11 @@
     <string name="settings_picker_duration"><b>Duration</b></string>
     <string name="settings_picker_apply">Apply</string>
     <string name="settings_picker_cancel">Cancel</string>
+    <string name="sim_title_type"><b>Type</b></string>
+    <string name="option_empty">Empty</string>
+    <string name="option_full">Full</string>
+    <string name="option_calm">Calm</string>
+    <string name="option_active">Active</string>
+    <string name="option_noisy">Noisy</string>
+    <string name="option_quiet">Quiet</string>
 </resources>

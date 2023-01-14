@@ -1,6 +1,11 @@
 package si.feri.timpra.mbhubapp.data
 
-class CaptureSettings(val enabled: Boolean, val duration: Long, val interval: Long) :
+class CaptureSettings(
+    val enabled: Boolean,
+    val duration: Long,
+    val interval: Long,
+    val hideDuration: Boolean = false
+) :
     java.io.Serializable {
     fun formatInterval(): String = format(interval)
     fun formatDuration(): String = format(duration)
@@ -9,6 +14,11 @@ class CaptureSettings(val enabled: Boolean, val duration: Long, val interval: Lo
         val DEFAULT_SOUND = CaptureSettings(false, 5000L, 1000L * 60L * 10L)
         val DEFAULT_ACCELEROMETER = CaptureSettings(false, 5000L, 1000L * 60L * 10L)
         val DEFAULT_IMAGE = CaptureSettings(false, 5000L, 1000L * 60L * 10L)
+
+
+        val DEFAULT_SIM_SOUND = CaptureSettings
+        val DEFAULT_SIM_ACCELEROMETER = CaptureSettings(false, 5000L, 1000L * 60L * 10L)
+        val DEFAULT_SIM_IMAGE = CaptureSettings(false, 5000L, 1000L * 60L * 10L)
 
         fun parse(v: String): Long? {
             try {
