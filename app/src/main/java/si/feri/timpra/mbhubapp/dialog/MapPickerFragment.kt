@@ -1,7 +1,6 @@
 package si.feri.timpra.mbhubapp.dialog
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -127,18 +126,10 @@ class MapPickerFragment : DialogFragment() {
         //
         map.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                AlertDialog.Builder(context).setTitle(getString(R.string.map_picker_dialog_title))
-                    .setMessage(
-                        getString(R.string.map_picker_dialog_description)
-                    ).setPositiveButton(getString(R.string.map_picker_dialog_confirm)) { _, _ ->
-                        setFragmentResult(
-                            REQUEST_KEY, resultBundle(p!!)
-                        )
-                        dismiss()
-                    }.setNegativeButton(getString(R.string.map_picker_dialog_neutral)) { _, _ ->
-                        // do nothing
-                    }.show()
-                return false
+                markerPrevious.position.latitude = p!!.latitude
+                markerPrevious.position.longitude = p.longitude
+                map.invalidate()
+                return true
             }
 
             override fun longPressHelper(p: GeoPoint?): Boolean {
@@ -156,6 +147,14 @@ class MapPickerFragment : DialogFragment() {
             .addOnSuccessListener { location: Location? ->
                 location?.let { updateLocation(it) }
             }
+
+
+        binding.setPosition.setOnClickListener {
+            setFragmentResult(
+                REQUEST_KEY, resultBundle(markerPrevious.position)
+            )
+            dismiss()
+        }
     }
 
     companion object {

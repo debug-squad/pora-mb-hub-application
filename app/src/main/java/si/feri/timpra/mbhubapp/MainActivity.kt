@@ -94,7 +94,6 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.INTERNET,
-                Manifest.permission.HIGH_SAMPLING_RATE_SENSORS,
                 Manifest.permission.CAMERA,
             )
         )
