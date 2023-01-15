@@ -9,7 +9,7 @@
         android:icon="@drawable/ic_baseline_add_to_photos_24"
         android:title="@string/title_simulate" />
     <item
-        android:id="@+id/navigation_about"
-        android:icon="@drawable/ic_baseline_info_24"
-        android:title="@string/info" />
+        android:id="@+id/navigation_event"
+        android:icon="@drawable/ic_marker_black"
+        android:title="@string/title_event" />
 </menu>

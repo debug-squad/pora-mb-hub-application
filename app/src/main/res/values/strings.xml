@@ -52,5 +52,7 @@
     <string name="option_quiet">Quiet</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="info">Info</string>
+    <string name="title_event">Events</string>
+    <string name="event_event_info"><![CDATA[<b>Selected event:</b> %s]]></string>
+    <string name="event_title">Name: %s</string>
 </resources>
