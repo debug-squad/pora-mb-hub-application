@@ -8,4 +8,8 @@
         android:id="@+id/navigation_simulate"
         android:icon="@drawable/ic_baseline_add_to_photos_24"
         android:title="@string/title_simulate" />
+    <item
+        android:id="@+id/navigation_about"
+        android:icon="@drawable/ic_baseline_info_24"
+        android:title="@string/info" />
 </menu>
