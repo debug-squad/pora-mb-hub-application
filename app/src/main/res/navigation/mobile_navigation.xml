@@ -15,4 +15,9 @@
         android:name="si.feri.timpra.mbhubapp.ui.simulate.SimulateFragment"
         android:label="@string/title_simulate"
         tools:layout="@layout/fragment_simulate" />
+    <fragment
+        android:id="@+id/navigation_event"
+        android:name="si.feri.timpra.mbhubapp.ui.event.EventFragment"
+        android:label="@string/title_event"
+        tools:layout="@layout/fragment_event" />
 </navigation>

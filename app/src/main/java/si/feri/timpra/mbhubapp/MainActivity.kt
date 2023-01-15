@@ -17,6 +17,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,8 +29,15 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import org.osmdroid.config.Configuration
+import si.feri.timpra.mbhubapp.data.Event
 import si.feri.timpra.mbhubapp.databinding.ActivityMainBinding
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -45,6 +53,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var app: MyApplication
 
     private var initialized by Delegates.notNull<Boolean>()
+
+    lateinit var mDatabase: DatabaseReference
+    lateinit var eventListener: ValueEventListener
+    lateinit var listOfEvents: MutableList<Event>
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_simulate
+                R.id.navigation_home, R.id.navigation_simulate, R.id.navigation_event
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -115,6 +127,14 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
     private fun init() {
         initialized = true
+
+        //
+        //
+        //
+
+        mDatabase = Firebase.database.reference
+        initEventListener()
+        mDatabase.child("events").addValueEventListener(eventListener)
 
         //
         // Model view
@@ -442,6 +462,45 @@ class MainActivity : AppCompatActivity() {
         LocationServices.getFusedLocationProviderClient(this).lastLocation.addOnSuccessListener { location: Location? ->
             location?.let {
                 callback(time, location)
+            }
+        }
+    }
+
+    private fun initEventListener() {
+        eventListener = object : ValueEventListener {
+
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                Log.i("firebase", "getting all values")
+
+                listOfEvents = mutableListOf()
+                if (dataSnapshot.exists()) {
+
+                    for (ds in dataSnapshot.children) {
+
+                        try {
+
+                            val id = ds.child("id").value.toString()
+                            val name = ds.child("name").value.toString()
+                            val latitude = ds.child("latitude").value.toString()
+                            val longitude = ds.child("longitude").value.toString()
+
+                            val newEvent = Event(id, name, latitude, longitude)
+
+                            listOfEvents.add(newEvent)
+
+                            Log.d("firebase", "we got value: $newEvent"!!)
+
+                        } catch (error: Exception) {
+                            Log.i("fireabase", "error getting values from fireabse")
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("firebase", "loadPost:onCancelled", databaseError.toException())
             }
         }
     }

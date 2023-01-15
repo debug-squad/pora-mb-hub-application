@@ -19,20 +19,18 @@ import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
 import org.osmdroid.util.GeoPoint
-import si.feri.timpra.mbhubapp.data.CaptureSettings
+import si.feri.timpra.mbhubapp.data.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import android.net.Uri
-import si.feri.timpra.mbhubapp.data.AccSettings
-import si.feri.timpra.mbhubapp.data.ImgSettings
-import si.feri.timpra.mbhubapp.data.SoundSettings
 
 const val MY_SP_FILE_NAME = "myshared.data"
 const val PREFERENCES_ID = "ID"
 const val PREFERENCES_SIMULATION_POS = "SIMULATION_POS"
 const val PREFERENCES_SETTINGS_ACCELEROMETER = "SETTINGS_ACCELEROMETER"
 const val PREFERENCES_SETTINGS_SOUND = "SETTINGS_SOUND"
+
+const val PREFERENCES_EVENT = "PREFERENCES_EVENT"
 
 const val PREFERENCES_SETTINGS_SIM_SOUND = "SETTINGS_SIM_SOUND"
 const val PREFERENCES_SETTINGS_SIM_SOUND_PATH = "SETTINGS_SIM_SOUND_PATH"
@@ -77,6 +75,9 @@ class MyApplication : Application() {
     val simAccSettings: LiveData<AccSettings> = _simAccSettings
     private val _simImgSettings = MutableLiveData<ImgSettings>()
     val simImgSettings: LiveData<ImgSettings> = _simImgSettings
+
+    private val _selectedEvent = MutableLiveData<Event?>()
+    val selectedEvent: LiveData<Event?> = _selectedEvent
 
     override fun onCreate() {
         super.onCreate()
@@ -205,6 +206,22 @@ class MyApplication : Application() {
         }
 
         //
+        // Set event
+        //
+
+        if (!sharedPref.contains(PREFERENCES_EVENT)) {
+            _selectedEvent.value = null
+            with(sharedPref.edit()) {
+                putString(PREFERENCES_EVENT, Gson().toJson(selectedEvent.value))
+                apply()
+            }
+        } else {
+            _selectedEvent.value = Gson().fromJson(
+                sharedPref.getString(PREFERENCES_EVENT, null)!!, Event::class.java
+            )
+        }
+
+        //
         // Connect to db
         //
 
@@ -312,6 +329,14 @@ class MyApplication : Application() {
         }
         _simSoundSettings.postValue(settings)
     }
+
+    fun updateEvent(event: Event?) {
+        with(sharedPref.edit()) {
+            putString(PREFERENCES_EVENT, Gson().toJson(event))
+            apply()
+        }
+        _selectedEvent.postValue(event)
+    }
     //
     //
     //
@@ -322,6 +347,7 @@ class MyApplication : Application() {
                 "timestamp" to time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 "latitude" to latitude,
                 "longitude" to longitude,
+                "eventId" to selectedEvent.value?.id,
             )
         ).toByteArray()
 
