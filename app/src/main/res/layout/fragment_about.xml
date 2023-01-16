@@ -1,14 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.AboutFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="28dp"
+            android:text="janwolf9"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/imageView4"
+            app:layout_constraintTop_toBottomOf="@+id/timImg" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="28dp"
+            android:text="timpraferi"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/timImg"
+            app:layout_constraintTop_toBottomOf="@+id/janImg" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Hello user!"
+            android:textSize="32sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="341dp"
+            android:layout_height="220dp"
+            android:layout_marginTop="36dp"
+            android:text="This App is meant to be used to gather data  about events and send them to the database via MQTT protocol. We are gathering images,  sounds and  accelerometer files. You can turn on interval to send data every x time. You also have an option to simulate data where you select files that are predefined to be sent."
+            android:textAlignment="center"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:text="App was developed by:"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+        <ImageView
+            android:id="@+id/timImg"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="120dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/tim"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/janImg" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="120dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/wolf"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timImg" />
+
+        <ImageView
+            android:id="@+id/janImg"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="120dp"
+            android:layout_marginTop="30dp"
+            android:src="@drawable/jan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView8"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="38dp"
+            android:text="JanHuntersi"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/janImg"
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
