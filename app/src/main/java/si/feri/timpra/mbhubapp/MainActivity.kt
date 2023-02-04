@@ -381,7 +381,7 @@ class MainActivity : AppCompatActivity() {
 
             val json = Gson().toJson(data)
             getLocTimeTag { time, loc ->
-                app.sendSound(
+                app.sendAcc(
                     time = time,
                     latitude = loc.latitude,
                     longitude = loc.longitude,
