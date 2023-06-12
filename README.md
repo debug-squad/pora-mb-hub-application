@@ -2,7 +2,7 @@
 
 This mobile application was written in kotlin in Android studio.
 With the app you are able to configure intervals to take pictures, record acceloremeter and sound.
-On the map you can select the location where the recording will tkae place, you also get a notification status for each recording.
+On the map you can select the location where the recording will take place, you also get a notification status for each recording.
 The data is then transmitted via MQTT, to our listener, where the data is proccessed with machine learning and the result is saved to our MongoDB. 
 
 
